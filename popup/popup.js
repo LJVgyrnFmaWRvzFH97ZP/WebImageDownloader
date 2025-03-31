@@ -71,6 +71,7 @@ document.addEventListener("alpine:init", () => {
         port.postMessage({ action: "clean" });
       }
     },
+
   }));
 
   Alpine.data("Image", () => ({
@@ -116,5 +117,6 @@ document.addEventListener("alpine:init", () => {
         this.selectedImages.add(this.url);
       }
     }
+
   }));
 });

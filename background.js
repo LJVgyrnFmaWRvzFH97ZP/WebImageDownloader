@@ -1,55 +1,93 @@
-let PORT = null;
-let urls = [];
-let paths = new Set();
+const ImageQueue = {
 
-const clean = () => {
-  urls = [];
-  paths.clear();
+  urls: [],
+  paths: new Set(),
+
+  get() {
+    return this.urls;
+  },
+
+  insert(url) {
+    const path = Utils.getPath(url);
+    if (!path) return;
+    if (!this.paths.has(path)) {
+      this.paths.add(path)
+      this.urls.push(url);
+      Channel.notify();
+    }
+  },
+
+  download(_urls) {
+    const urls = _urls ?? this.urls;
+    Utils.getTargetDir((target_dir) => {
+      urls.forEach((url) => {
+        Utils.downloadImage(url, target_dir);
+      });
+    });
+  },
+
+  clean() {
+    this.urls = [];
+    this.paths.clear();
+  },
+
 }
 
-const finish = () => {
-  if (!PORT) return;
-  PORT.postMessage({
-    action: "finish",
-  });
+const Channel = {
+
+  port: null,
+
+  notify() {
+    if (!this.port) return;
+    this.port.postMessage({
+      action: "update",
+      urls: ImageQueue.get(),
+    });
+  },
+
+  finish() {
+    if (!this.port) return;
+    this.port.postMessage({
+      action: "finish",
+    });
+  },
+
 }
 
-const notify = () => {
-  if (!PORT) return;
-  PORT.postMessage({
-    action: "update",
-    urls,
-  });
-}
+const Utils = {
 
-const getPath = (url) => {
-  const file = url.split('/').at(-1).split('?')[0];
-  return file;
-}
+  getPath(url) {
+    const file = url.split('/').at(-1).split('?')[0];
+    return file;
+  },
 
-const getAlbumDir = (callback) => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const url = tabs[0].url;
+  getTargetDir(download2) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const { url, title } = tabs[0];
+      const match = title.match(/\((.*?)\)/);
+      const author = match ? match[1] : title;
+      const album = url.split('/').slice(-2, -1)[0];
+      const target_dir = author + '/' + album;
+      download2(target_dir);
+    });
+  },
 
-    const title = tabs[0].title;
-    const match = title.match(/\((.*?)\)/);
-    const author = match ? match[1] : title;
+  downloadImage(url, target_dir) {
+    const path = this.getPath(url)
+    const filename = `${target_dir}/${path}.jpg`;
+    chrome.downloads.download({
+      url: url,
+      filename: filename,
+      conflictAction: "overwrite",
+      saveAs: false
+    });
+  },
 
-    const album = url.split('/').slice(-2, -1)[0];
-    const album_dir = author + '/' + album;
-    callback(album_dir);
-  });
 }
 
 chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
-    const path = getPath(details.url);
-    if (!path) return;
-    if (!paths.has(path)) {
-      paths.add(path)
-      urls.push(details.url);
-      notify();
-    }
+    ImageQueue.insert(details.url);
   },
   {
     urls: [
@@ -60,54 +98,37 @@ chrome.webRequest.onBeforeRequest.addListener(
 );
 
 chrome.tabs.onRemoved.addListener(() => {
-  clean();
-  notify();
+  ImageQueue.clean();
+  Channel.notify();
 });
 
 chrome.runtime.onConnect.addListener((port) => {
   console.assert(port.name === 'popup');
-  PORT = port;
+
+  Channel.port = port;
 
   port.onMessage.addListener((message) => {
-    if (message.action === "save") {
-      getAlbumDir((album_dir) => {
-        message.urls.forEach((url, index) => {
-          const path = getPath(url)
-          const filename = `${album_dir}/${path}.jpg`;
-          chrome.downloads.download({
-            url: url,
-            filename: filename,
-            conflictAction: "overwrite",
-            saveAs: false
-          });
-        });
-      });
-      finish();
-    } else if (message.action === 'save-all') {
-      getAlbumDir((album_dir) => {
-        urls.forEach((url, index) => {
-          const path = getPath(url)
-          const filename = `${album_dir}/${path}.jpg`;
-          chrome.downloads.download({
-            url: url,
-            filename: filename,
-            conflictAction: "overwrite",
-            saveAs: false
-          });
-        });
-      });
-      return;
-    } else if (message.action === 'clean') {
-      clean();
-      notify();
-      return;
+    switch (message.action) {
+      case "save":
+        ImageQueue.download(message.urls);
+        Channel.finish();
+        break;
+      case "save-all":
+        ImageQueue.download();
+        break;
+      case "clean":
+        ImageQueue.clean();
+        Channel.notify();
+        break;
+      default:
+        break;
     }
   });
 
   port.onDisconnect.addListener(() => {
-    PORT = null;
+    Channel.port = null;
   })
 
-  notify();
+  Channel.notify();
 
 });
