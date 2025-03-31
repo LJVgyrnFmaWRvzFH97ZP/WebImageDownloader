@@ -1,100 +1,120 @@
-const selectedImages = new Set();
+document.addEventListener("alpine:init", () => {
 
-const getPath = (url) => {
-  const file = url.split('/').at(-1).split('?')[0];
-  return file;
-}
+  let port = null;
 
-document.addEventListener("DOMContentLoaded", () => {
+  Alpine.data("WebImageDownloaderPopup", () => ({
 
-  const port = chrome.runtime.connect({ name: 'popup' });
-  const count = document.getElementById('Count');
-  const imageList = document.getElementById("imageList");
-  const settingsButton = document.getElementById('Settings');
-  const saveButton = document.getElementById('SaveButton');
-  const saveAllButton = document.getElementById('SaveAllButton');
-  const cleanButton = document.getElementById('CleanButton');
+    images: [],
+    selectedImages: new Set(),
 
-  const getShowIndex = (length) => {
-    if (length < 28) {
-      return {
-        start: 0,
-        end: length
-      }
-    } else {
-      return {
-        start: length - 28,
-        end: length,
-      }
-    }
-  }
+    showPages: 1,
 
-  const update = (urls) => {
-    imageList.innerHTML = "";
-    count.innerHTML = urls.length;
-    const { start, end } = getShowIndex(urls.length)
-    urls.slice(start, end).reverse().forEach((url) => {
-      const li = document.createElement("li");
-      li.className = "relative";
-
-      const checkIcon = document.createElement("div");
-      checkIcon.className = "absolute top-0 right-0 w-4 h-4 border-2 border-gray-100 p-1 bg-green-600 rounded-full hidden";
-
-      const sizeText = document.createElement("span");
-      sizeText.className = "absolute bottom-0 right-0 p-1 rounded-md text-[8px] bg-orange-600 text-white font-semibold";
-
-      const img = document.createElement("img");
-      img.className = "w-[60px] h-[60px] object-cover rounded-md cursor-pointer";
-
-      fetch(url)
-        .then(response => response.blob())
-        .then(blob => {
-          img.src = URL.createObjectURL(blob);
-          img.onload = () => {
-            sizeText.textContent = `${img.naturalWidth}`;
-          };
-        })
-        .catch(error => console.error("Image load error:", error));
-
-      img.addEventListener("click", () => {
-        if (selectedImages.has(url)) {
-          selectedImages.delete(url);
-          checkIcon.classList.add("hidden");
-        } else {
-          selectedImages.add(url);
-          checkIcon.classList.remove("hidden");
+    init() {
+      port = chrome.runtime.connect({ name: "popup" });
+      port.onMessage.addListener((message) => {
+        switch (message.action) {
+          case "update":
+            this.images = message.urls;
+            break;
+          case "finish":
+            this.selectedImages.clear();
+            break;
+          default:
+            break;
         }
       });
+    },
 
-      li.appendChild(img);
-      li.appendChild(checkIcon);
-      li.appendChild(sizeText);
-      imageList.appendChild(li);
-    });
-  }
+    get visibleImages() {
+      return this.images.slice(Math.max(this.images.length - 20 * this.showPages, 0)).reverse();
+    },
 
-  port.onMessage.addListener((message) => {
-    if (message.action === "update") {
-      update(message.urls);
-    } else if (message.action === 'finish') {
-      selectedImages.clear();
+    get imageCount() {
+      return this.images.length;
+    },
+
+    get selectedCount() {
+      return this.selectedImages.size;
+    },
+
+    get loadMoreAvailable() {
+      return this.images.length > 20 * this.showPages;
+    },
+
+    get loadLessAvailable() {
+      return this.showPages > 1;
+    },
+
+    loadMore() {
+      this.showPages++;
+    },
+
+    loadLess() {
+      this.showPages = 1;
+    },
+
+    saveSelected() {
+      if (port) {
+        port.postMessage({ action: "save", urls: Array.from(this.selectedImages) });
+      }
+    },
+
+    saveAll() {
+      if (port) {
+        port.postMessage({ action: "save-all" });
+      }
+    },
+
+    clean() {
+      this.selectedImages.clear();
+      if (port) {
+        port.postMessage({ action: "clean" });
+      }
+    },
+  }));
+
+  Alpine.data("Image", () => ({
+
+    src: null,
+
+    async init() {
+      await this.getImageSrc();
+    },
+
+    async getImageSrc() {
+      try {
+        if (this.src) {
+          return this.src;
+        }
+        const response = await fetch(this.url);
+        const blob = await response.blob();
+        this.src = URL.createObjectURL(blob);
+        return this.src;
+      } catch (error) {
+        console.error("Error getting image source:", error);
+        return null;
+      }
+    },
+
+    async getImageSize() {
+      const img = new Image();
+      img.src = await this.getImageSrc();
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
+      return img.width;
+    },
+
+    get selected() {
+      return this.selectedImages.has(this.url);
+    },
+
+    toggleSelection() {
+      if (this.selectedImages.has(this.url)) {
+        this.selectedImages.delete(this.url);
+      } else {
+        this.selectedImages.add(this.url);
+      }
     }
-  });
-  settingsButton.onclick = () => {
-    if (chrome.runtime.openOptionsPage) {
-      chrome.runtime.openOptionsPage();
-    } else {
-      window.open(chrome.runtime.getURL('options.html'));
-    }
-  };
-  saveButton.onclick = () => {
-    port.postMessage({ action: "save", urls: [...selectedImages] });
-  };
-  saveAllButton.onclick = () => {
-    port.postMessage({ action: "save-all" });
-  };
-  cleanButton.onclick = () => {
-    selectedImages.clear();
-    port.postMessage({ action: "clean" });
-  };
+  }));
 });

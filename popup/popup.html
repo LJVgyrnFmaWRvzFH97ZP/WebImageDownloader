@@ -6,38 +6,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detected Images</title>
   <link href="./popup.css" rel="stylesheet">
-  <script src="popup.js" defer></script>
-  <style>
-  </style>
+  <script defer src="./popup.js"></script>
+  <script defer src="./alpine-csp.min.js"></script>
 </head>
 
-<body class="w-[300px] bg-purple-100">
+<body x-data="WebImageDownloaderPopup" class="w-[320px]">
   <div class="text-white bg-purple-900 p-3 flex items-center">
     <span class="text-2xl font-bold">Detected Images</span>
-    <button id="Settings"
-      class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-white text-black rounded-full ms-auto">
-      Settings
-    </button>
   </div>
   <div class="flex flex-col space-y-2 p-3">
-    <div class="flex items-center space-x-1">
-      <button id="SaveButton"
-        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-300 text-green-700 rounded-full">
+    <div class="flex items-center gap-x-1">
+      <button @click="saveSelected"
+        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-300 text-green-700 rounded-md">
         Save Selected
       </button>
-      <button id="SaveAllButton"
-        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-blue-300 text-blue-700 rounded-full">
+      <button @click="saveAll"
+        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-blue-300 text-blue-700 rounded-md">
         Save All
       </button>
-      <button id="CleanButton"
-        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-pink-300 text-pink-700 rounded-full">
+      <button @click="clean"
+        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-pink-300 text-pink-700 rounded-md">
         Clean
       </button>
-      <div id="Count"
-        class="ms-auto w-3 h-3 p-3 rounded-full bg-red-500 text-white font-bold flex items-center justify-center">10
+      <div class="ms-auto rounded-md overflow-hidden flex items-center">
+        <span x-text="selectedCount"
+          class="w-3 h-3 p-3 bg-green-500 text-white font-bold flex items-center justify-center">
+        </span>
+        <span x-text="imageCount" class="w-3 h-3 p-3 bg-red-500 text-white font-bold flex items-center justify-center">
+        </span>
       </div>
     </div>
-    <ul id="imageList" class="grid grid-cols-4 gap-1 max-h-[500px]"></ul>
+    <ul class="grid grid-cols-4 gap-1 max-h-[300px] overflow-y-scroll hide-scrollbar">
+      <template x-for="url in visibleImages" :key="url">
+        <li x-data="Image" @click="toggleSelection" class="relative">
+          <img :src="getImageSrc" class="w-[60px] h-[60px] object-cover rounded-md cursor-pointer">
+          <span x-text="getImageSize"
+            class="absolute bottom-0 right-0 p-1 rounded-md text-[8px] bg-orange-600 text-white font-semibold"></span>
+          <div x-show="selected"
+            class="absolute top-0 right-0 w-4 h-4 border-2 border-gray-100 p-1 bg-green-600 rounded-full"></div>
+        </li>
+      </template>
+    </ul>
+    <div class="flex items-center gap-x-1">
+      <button @click="loadMore" x-show="loadMoreAvailable"
+        class="flex-1 hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-100 text-green-600 rounded-md">
+        Load More
+      </button>
+      <button @click="loadLess" x-show="loadLessAvailable"
+        class="flex-1 hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-red-100 text-red-600 rounded-md">
+        Load Less
+      </button>
+    </div>
   </div>
 </body>
 
