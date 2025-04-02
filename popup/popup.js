@@ -1,3 +1,4 @@
+import { Images } from "../utils/Images.js";
 import { Settings } from "../utils/Settings.js";
 
 document.addEventListener("alpine:init", () => {
@@ -85,24 +86,16 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("Image", () => ({
 
     src: null,
+    width: null,
 
     async init() {
       await this.getImageSrc();
     },
 
     async getImageSrc() {
-      try {
-        if (this.src) {
-          return this.src;
-        }
-        const response = await fetch(this.url);
-        const blob = await response.blob();
-        this.src = URL.createObjectURL(blob);
-        return this.src;
-      } catch (error) {
-        console.error("Error getting image source:", error);
-        return null;
-      }
+      const { src, width } = await Images.getImageInfo(this.url);
+      this.src = src;
+      this.width = width;
     },
 
     get shown() {
