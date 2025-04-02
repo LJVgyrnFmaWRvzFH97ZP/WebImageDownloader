@@ -1,6 +1,10 @@
+import { Settings } from "../utils/Settings.js";
+
 document.addEventListener("alpine:init", () => {
 
   let port = null;
+
+  Settings.init();
 
   Alpine.data("WebImageDownloaderPopup", () => ({
 
@@ -9,9 +13,13 @@ document.addEventListener("alpine:init", () => {
 
     showPages: 1,
 
-    init() {
+    async init() {
+      this.connect();
+    },
+
+    connect() {
       port = chrome.runtime.connect({ name: "popup" });
-      port.onMessage.addListener((message) => {
+      port.onMessage.addListener(async (message) => {
         switch (message.action) {
           case "update":
             this.images = message.urls;
@@ -38,7 +46,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     get loadMoreAvailable() {
-      return this.images.length > 20 * this.showPages;
+      return this.images.length > Settings.options.pageSize * this.showPages;
     },
 
     get loadLessAvailable() {
@@ -97,13 +105,8 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
-    async getImageSize() {
-      const img = new Image();
-      img.src = await this.getImageSrc();
-      await new Promise((resolve) => {
-        img.onload = resolve;
-      });
-      return img.width;
+    get shown() {
+      return this.width > Settings.options.minimalWidth;
     },
 
     get selected() {

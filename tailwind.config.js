@@ -2,6 +2,7 @@
 module.exports = {
   content: [
     "./popup/*.{html,js}",
+    "./options/*.{html,js}",
   ],
   theme: {
     extend: {},
