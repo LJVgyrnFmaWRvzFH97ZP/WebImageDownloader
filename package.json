@@ -8,6 +8,6 @@
     "tailwindcss": "^3.4.17"
   },
   "scripts": {
-    "build:css": "npx tailwindcss -i ./tailwind.css -o ./popup/popup.css --minify"
+    "build:css": "npx tailwindcss -i ./tailwind.css -o ./dist/css/styles.css --minify"
   }
 }
