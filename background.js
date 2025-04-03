@@ -99,8 +99,8 @@ const Utils = {
 
   getOriginalFilename(url) {
     const urlObj = new URL(url);
-    const paths = urlObj.pathname.split('/').filter(Boolean);
-    return paths.slice(-1)[0];
+    const filename = urlObj.pathname.split('/').filter(Boolean).join('_');
+    return filename;
   },
 
   resolveDirectory(option, url) {
@@ -119,10 +119,9 @@ const Utils = {
   },
 
   resolveFilename(option, url, index, timestamp) {
-    const urlObj = new URL(url);
-    const originalImageName = urlObj.pathname.split('/').filter(Boolean).slice(-1)[0];
-    const ext = '.' + originalImageName.split('.').slice(-1)[0];
-
+    const fileparts = this.getOriginalFilename(url).split('.');
+    const originalImageName = fileparts[0];
+    const ext = '.' + fileparts.slice(-1)[0];
     return option.replace(/{(.*?)}/g, (match, key) => {
       if (key === "index") return index.toString();
       if (key === "timestamp") return timestamp.toString();
@@ -140,7 +139,7 @@ const Utils = {
 
   downloadImage(target_dir, url, index, timestamp) {
     const filename = this.resolveFilename(Settings.options.filename, url, index, timestamp)
-    const filepath = target_dir + '/' + filename;
+    const filepath = target_dir ? target_dir + '/' + filename : filename;
     chrome.downloads.download({
       url: url,
       filename: filepath,
