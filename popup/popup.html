@@ -17,16 +17,30 @@
   <div class="flex flex-col space-y-2 p-3">
     <ul class="flex items-center flex-wrap gap-1">
       <template x-for="path in paths" :key="path">
-        <li x-data="Path" x-text="path" @click="toggleSelection" class="cursor-pointer rounded-md text-sm px-2 py-1"
-          :class="classes">
+        <li x-data="Path" x-text="path" @click="toggleSelection"
+          class="cursor-pointer rounded-md text-sm px-2 py-1 max-w-[100px] truncate" :class="classes">
         </li>
       </template>
+      <li x-data="AddButton" class="flex items-center gap-x-1">
+        <span @click="toggleAdding" x-show="showAddButton"
+          class="bg-gray-300 text-gray-700 cursor-pointer rounded-md text-sm px-2 py-1">+</span>
+        <div x-show="showCommitButton" class="flex items-center gap-x-1">
+          <input @change="setPathValue" :value="pathValue"
+            class="focus:outline-none bg-gray-100 text-gray-600 rounded-md px-2 py-1" />
+        </div>
+        <span @click="commitAdding" x-show="showCommitButton"
+          class="bg-gray-300 text-gray-700 cursor-pointer rounded-md text-sm px-2 py-1">√</span>
+        <span @click="toggleAdding" x-show="showCommitButton"
+          class="bg-gray-300 text-gray-700 cursor-pointer rounded-md text-sm px-2 py-1">x</span>
+      </li>
     </ul>
-    <div class="flex items-center gap-x-2">
-      Download to:
-      <span x-text="targetDirectory" class="ms-2 underline"></span>
-      <span x-show="targetDirectory" @click="clearPaths"
-        class="cursor-pointer ms-auto w-5 h-5 leading-5 flex items-center shrink-0 justify-center rounded-full bg-gray-300 text-gray-700">x</span>
+    <div class="">
+      <div class="flex items-center ">
+        <span>Download to:</span>
+        <span x-show="targetDirectory" @click="clearPaths"
+          class="cursor-pointer ms-auto w-5 h-5 leading-5 flex items-center shrink-0 justify-center rounded-md bg-gray-300 text-gray-700">x</span>
+      </div>
+      <div x-text="targetDirectory" class="underline"></div>
     </div>
     <div class="flex items-center gap-x-1">
       <button @click="saveSelected"

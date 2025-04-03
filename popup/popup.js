@@ -13,8 +13,10 @@ document.addEventListener("alpine:init", () => {
     images: [],
     selectedImages: new Set(),
 
-    paths: [],
+    urlPaths: [],
     selectedPaths: [],
+
+    customPaths: [],
 
     showPages: 1,
 
@@ -40,7 +42,11 @@ document.addEventListener("alpine:init", () => {
     },
 
     async getPaths() {
-      this.paths = await Path.getPathSegments();
+      this.urlPaths = await Path.getPathSegments();
+    },
+
+    get paths() {
+      return this.urlPaths.concat(this.customPaths);
     },
 
     get targetDirectory() {
@@ -162,5 +168,38 @@ document.addEventListener("alpine:init", () => {
       }
     }
 
+  }));
+
+  Alpine.data("AddButton", () => ({
+
+    adding: false,
+    pathValue: '',
+
+    init() {
+    },
+
+    toggleAdding() {
+      this.adding = !this.adding;
+    },
+
+    get showAddButton() {
+      return !this.adding;
+    },
+
+    get showCommitButton() {
+      return this.adding;
+    },
+
+    setPathValue(event) {
+      this.pathValue = event.target.value;
+    },
+
+    commitAdding() {
+      if (this.pathValue && !this.customPaths.includes(this.pathValue) && !this.urlPaths.includes(this.pathValue)) {
+        this.customPaths.push(this.pathValue);
+        this.toggleAdding();
+        this.pathValue = '';
+      }
+    }
   }));
 });
