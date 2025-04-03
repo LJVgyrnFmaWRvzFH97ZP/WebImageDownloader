@@ -7,6 +7,7 @@ export const Settings = {
     minimalWidth: 200,
     rootDirectory: '',
     filename: '{timestamp}-{index}-{original_image_name}',
+    customUrlPatterns: '',
   },
 
   async init() {

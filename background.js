@@ -155,7 +155,7 @@ const Intercepter = {
   listener: null,
 
   init() {
-    this.updateListener(Settings.formats);
+    this.updateListener(Settings.formats, Settings.options.customUrlPatterns);
     this.watchFormats();
   },
 
@@ -165,19 +165,22 @@ const Intercepter = {
     }
   },
 
-  updateListener(formats) {
+  updateListener(formats, customUrlPatterns) {
     if (this.listener) {
       chrome.webRequest.onBeforeRequest.removeListener(this.listener);
     }
     this.listener = this.getListener();
     const urls = formats.map(ext => `*://*/*.${ext.toLowerCase()}*`);
-    chrome.webRequest.onBeforeRequest.addListener(this.listener, { urls });
+    const customUrls = customUrlPatterns !== "" ? customUrlPatterns.split(',') : [];
+    chrome.webRequest.onBeforeRequest.addListener(this.listener, { urls: urls.concat(customUrls) });
   },
 
   watchFormats() {
     chrome.storage.onChanged.addListener((changes) => {
       if (changes.webImageDownloaderSettings) {
-        this.updateListener(changes.webImageDownloaderSettings.newValue.formats);
+        this.updateListener(
+          changes.webImageDownloaderSettings.newValue.formats,
+          changes.webImageDownloaderSettings.newValue.options.customUrlPatterns);
       }
     });
   },

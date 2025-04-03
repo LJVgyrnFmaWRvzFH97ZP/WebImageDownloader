@@ -52,6 +52,15 @@ document.addEventListener("alpine:init", () => {
         value: null,
         default: '{timestamp}-{index}-{original_image_name}',
       },
+      {
+        key: 'customUrlPatterns',
+        name: "Custom URL Patterns",
+        desc: 'Define custom patterns (comma-separated) to intercept image URLs.',
+        placeholder: 'https://example.com/images/*,https://cdn.com/images/*',
+        type: 'text',
+        value: null,
+        default: '',
+      }
     ],
 
     async init() {
