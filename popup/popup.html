@@ -15,6 +15,19 @@
     <span class="text-2xl font-bold">Detected Images</span>
   </div>
   <div class="flex flex-col space-y-2 p-3">
+    <ul class="flex items-center flex-wrap gap-1">
+      <template x-for="path in paths" :key="path">
+        <li x-data="Path" x-text="path" @click="toggleSelection" class="cursor-pointer rounded-md text-sm px-2 py-1"
+          :class="classes">
+        </li>
+      </template>
+    </ul>
+    <div class="flex items-center gap-x-2">
+      Download to:
+      <span x-text="targetDirectory" class="ms-2 underline"></span>
+      <span x-show="targetDirectory" @click="clearPaths"
+        class="cursor-pointer ms-auto w-5 h-5 leading-5 flex items-center shrink-0 justify-center rounded-full bg-gray-300 text-gray-700">x</span>
+    </div>
     <div class="flex items-center gap-x-1">
       <button @click="saveSelected"
         class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-300 text-green-700 rounded-md">

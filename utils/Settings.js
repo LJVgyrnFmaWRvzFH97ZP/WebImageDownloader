@@ -6,7 +6,6 @@ export const Settings = {
     pageSize: 20,
     minimalWidth: 200,
     rootDirectory: '',
-    directory: '{domain}/{path[0]}',
     filename: '{timestamp}-{index}-{original_image_name}',
   },
 
@@ -35,4 +34,5 @@ export const Settings = {
       }
     });
   },
+
 }

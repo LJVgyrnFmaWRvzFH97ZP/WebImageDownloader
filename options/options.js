@@ -44,15 +44,6 @@ document.addEventListener("alpine:init", () => {
         default: '',
       },
       {
-        key: 'dir',
-        name: "Directory",
-        desc: 'Subdirectory format for organizing downloaded images.',
-        placeholder: '{domain}/{path[0]} → example.com/gallery',
-        type: 'text',
-        value: null,
-        default: '{domain}/{path[0]}',
-      },
-      {
         key: 'filename',
         name: "Filename",
         desc: 'Filename format of the downloaded image.',

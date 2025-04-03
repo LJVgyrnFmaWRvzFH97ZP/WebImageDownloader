@@ -1,3 +1,4 @@
+import { Path } from "../utils/Paths.js";
 import { Images } from "../utils/Images.js";
 import { Settings } from "../utils/Settings.js";
 
@@ -12,10 +13,14 @@ document.addEventListener("alpine:init", () => {
     images: [],
     selectedImages: new Set(),
 
+    paths: [],
+    selectedPaths: [],
+
     showPages: 1,
 
     async init() {
       this.connect();
+      await this.getPaths();
     },
 
     connect() {
@@ -32,6 +37,14 @@ document.addEventListener("alpine:init", () => {
             break;
         }
       });
+    },
+
+    async getPaths() {
+      this.paths = await Path.getPathSegments();
+    },
+
+    get targetDirectory() {
+      return this.selectedPaths.join("/");
     },
 
     get visibleImages() {
@@ -64,13 +77,20 @@ document.addEventListener("alpine:init", () => {
 
     saveSelected() {
       if (port) {
-        port.postMessage({ action: "save", urls: Array.from(this.selectedImages) });
+        port.postMessage({
+          action: "save",
+          urls: Array.from(this.selectedImages),
+          target_dir: this.targetDirectory,
+        });
       }
     },
 
     saveAll() {
       if (port) {
-        port.postMessage({ action: "save-all" });
+        port.postMessage({
+          action: "save-all",
+          target_dir: this.targetDirectory,
+        });
       }
     },
 
@@ -80,6 +100,34 @@ document.addEventListener("alpine:init", () => {
         port.postMessage({ action: "clean" });
       }
     },
+
+    clearPaths() {
+      this.selectedPaths = [];
+    },
+
+  }));
+
+  Alpine.data("Path", () => ({
+
+    classes_normal: 'bg-gray-300 text-gray-700',
+    classes_selected: 'bg-orange-300 text-orange-700',
+
+    init() {
+    },
+
+    get selected() {
+      return this.selectedPaths.includes(this.path);
+    },
+
+    get classes() {
+      return this.selected ? this.classes_selected : this.classes_normal;
+    },
+
+    toggleSelection() {
+      if (!this.selected) {
+        this.selectedPaths.push(this.path);
+      }
+    }
 
   }));
 

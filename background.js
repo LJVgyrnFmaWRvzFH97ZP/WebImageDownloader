@@ -24,13 +24,11 @@ const ImageQueue = {
     }
   },
 
-  download(_urls) {
+  download(target_dir, _urls) {
     const timestamp = Date.now();
     const urls = _urls ?? this.urls;
-    Utils.getDownloadDir((target_dir) => {
-      urls.forEach((url, index) => {
-        Utils.downloadImage(target_dir, url, index, timestamp);
-      });
+    urls.forEach((url, index) => {
+      Utils.downloadImage(target_dir, url, index, timestamp);
     });
   },
 
@@ -56,11 +54,11 @@ const Channel = {
       port.onMessage.addListener((message) => {
         switch (message.action) {
           case "save":
-            ImageQueue.download(message.urls);
+            ImageQueue.download(message.target_dir, message.urls);
             this.finish();
             break;
           case "save-all":
-            ImageQueue.download();
+            ImageQueue.download(message.target_dir);
             break;
           case "clean":
             ImageQueue.clean();
@@ -140,19 +138,9 @@ const Utils = {
     return '';
   },
 
-  getDownloadDir(download2) {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const dir = this.resolveDirectory(Settings.options.directory, tabs[0].url)
-      const target_dir = this.getRootDirectory() + dir;
-      download2(target_dir);
-    });
-  },
-
   downloadImage(target_dir, url, index, timestamp) {
     const filename = this.resolveFilename(Settings.options.filename, url, index, timestamp)
-    console.log(filename);
     const filepath = target_dir + '/' + filename;
-    console.log(filepath);
     chrome.downloads.download({
       url: url,
       filename: filepath,
@@ -184,7 +172,6 @@ const Intercepter = {
     }
     this.listener = this.getListener();
     const urls = formats.map(ext => `*://*/*.${ext.toLowerCase()}*`);
-    console.log(urls);
     chrome.webRequest.onBeforeRequest.addListener(this.listener, { urls });
   },
 
