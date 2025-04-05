@@ -6,8 +6,8 @@ const ImageQueue = {
   paths: null,
 
   init() {
-    this.urls = [],
-      this.paths = new Set();
+    this.urls = [];
+    this.paths = new Set();
   },
 
   get() {
@@ -197,9 +197,3 @@ Settings.init();
 ImageQueue.init();
 Channel.init();
 Intercepter.init();
-
-chrome.tabs.onRemoved.addListener(() => {
-  ImageQueue.clean();
-  Channel.notify();
-  Intercepter.destroy();
-});
