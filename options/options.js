@@ -1,17 +1,11 @@
+import { Settings } from "../utils/Settings.js";
+
 document.addEventListener("alpine:init", () => {
 
   Alpine.data("WebImageDownloaderOptions", () => ({
 
     formats: {
-      avaliable: [
-        'JPEG',
-        'JPG',
-        'PNG',
-      ],
-      default: [
-        'JPEG',
-        'JPG',
-      ],
+      avaliable: [],
       selected: null,
     },
 
@@ -23,7 +17,6 @@ document.addEventListener("alpine:init", () => {
         placeholder: '',
         type: 'number',
         value: null,
-        default: 20,
       },
       {
         key: 'minimalWidth',
@@ -32,16 +25,6 @@ document.addEventListener("alpine:init", () => {
         placeholder: '',
         type: 'number',
         value: null,
-        default: 200,
-      },
-      {
-        key: 'rootDir',
-        name: "Root Directory",
-        desc: 'Base directory where downloaded images will be saved.',
-        placeholder: '',
-        type: 'text',
-        value: null,
-        default: '',
       },
       {
         key: 'filename',
@@ -50,7 +33,6 @@ document.addEventListener("alpine:init", () => {
         placeholder: '{index}-{timestamp}-{original_image_name} → 1-1693498765-photo1',
         type: 'text',
         value: null,
-        default: '{timestamp}-{index}-{original_image_name}',
       },
       {
         key: 'customUrlPatterns',
@@ -59,22 +41,20 @@ document.addEventListener("alpine:init", () => {
         placeholder: 'https://example.com/images/*,https://cdn.com/images/*',
         type: 'text',
         value: null,
-        default: '',
       }
     ],
 
     async init() {
-      const settings = await this.loadSettings();
-      this.formats.selected = new Set(settings?.formats || this.formats.default);
-      this.options.forEach((option) => {
-        const optionValue = settings?.options?.[option.key];
-        option.value = optionValue || option.default;
-      });
+      await Settings.init();
+      this.formats.avaliable = Settings.default.formats;
+      this.updateOptions();
     },
 
-    async loadSettings() {
-      const settings = await chrome.storage.sync.get("webImageDownloaderSettings");
-      return settings.webImageDownloaderSettings || null;
+    updateOptions() {
+      this.formats.selected = new Set(Settings.formats);
+      this.options.forEach((option) => {
+        option.value = Settings.options[option.key];
+      });
     },
 
     async saveSettings() {
@@ -86,15 +66,16 @@ document.addEventListener("alpine:init", () => {
         formats: Array.from(this.formats.selected),
         options,
       };
-      await chrome.storage.sync.set({ webImageDownloaderSettings: settings });
+      await Settings.saveSettings(settings);
     },
 
     async resetSettings() {
-      this.formats.selected = new Set(this.formats.default);
-      this.options.forEach((option) => {
-        option.value = option.default;
-      });
-      await this.saveSettings();
+      const settings = {
+        formats: Settings.default.formats,
+        options: Settings.default.options,
+      }
+      await Settings.saveSettings(settings);
+      this.updateOptions();
     },
 
   }));
