@@ -67,15 +67,21 @@ document.addEventListener("alpine:init", () => {
         options,
       };
       await Settings.saveSettings(settings);
+      alert('Settings Saved');
     },
 
     async resetSettings() {
+      const reset = confirm('Are you sure to reset settings?');
+      if (!reset) {
+        return;
+      }
       const settings = {
         formats: Settings.default.formats,
         options: Settings.default.options,
       }
       await Settings.saveSettings(settings);
       this.updateOptions();
+      alert('Settings Reset');
     },
 
   }));
