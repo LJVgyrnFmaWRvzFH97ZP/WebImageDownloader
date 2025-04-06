@@ -193,7 +193,13 @@ const Intercepter = {
 
 }
 
-Settings.init();
-ImageQueue.init();
-Channel.init();
-Intercepter.init();
+const Task = {
+  async init() {
+    await Settings.init();
+    ImageQueue.init();
+    Channel.init();
+    Intercepter.init();
+  }
+}
+
+Task.init();
