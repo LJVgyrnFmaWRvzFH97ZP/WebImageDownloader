@@ -63,9 +63,16 @@
         </span>
       </div>
     </div>
+    <ul class="hidden">
+      <template x-for="url in images" :key="url">
+        <li x-data="ImageTemplate">
+          <img :src="src">
+        </li>
+      </template>
+    </ul>
     <ul class="grid grid-cols-4 gap-1 max-h-[300px] overflow-y-scroll hide-scrollbar">
       <template x-for="url in visibleImages" :key="url">
-        <li x-data="Image" x-show="shown" @click="toggleSelection" class="relative">
+        <li x-data="Image" @click="toggleSelection" class="relative">
           <img :src="src" class="w-[60px] h-[60px] object-cover rounded-md cursor-pointer">
           <span x-text="width"
             class="absolute bottom-0 right-0 p-1 rounded-md text-[8px] bg-orange-600 text-white font-semibold"></span>

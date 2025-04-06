@@ -55,11 +55,11 @@ document.addEventListener("alpine:init", () => {
     },
 
     get visibleImages() {
-      return this.images.slice(Math.max(this.images.length - 20 * this.showPages, 0)).reverse();
+      return this.shownImages.slice(Math.max(this.shownImages.length - Settings.options.pageSize * this.showPages, 0)).reverse();
     },
 
     get imageCount() {
-      return this.images.length;
+      return this.shownImages.length;
     },
 
     get selectedCount() {
@@ -67,7 +67,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     get loadMoreAvailable() {
-      return this.images.length > Settings.options.pageSize * this.showPages;
+      return this.shownImages.length > Settings.options.pageSize * this.showPages;
     },
 
     get loadLessAvailable() {
@@ -120,6 +120,7 @@ document.addEventListener("alpine:init", () => {
       this.imageBlobs = {};
       this.shownImages = [];
       this.selectedImages.clear();
+      this.showPages = 1;
       if (port) {
         port.postMessage({ action: "clean" });
       }
@@ -155,7 +156,7 @@ document.addEventListener("alpine:init", () => {
 
   }));
 
-  Alpine.data("Image", () => ({
+  Alpine.data("ImageTemplate", () => ({
 
     src: null,
     width: null,
@@ -165,7 +166,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     async getImageSrc() {
-      const { src, width } = await Images.getImageInfo(this.url);
+      const { src, width } = await Images.getImageInfo(this.url, this.imageBlobs[this.url]);
       this.src = src;
       this.width = width;
       this.imageBlobs[this.url] = src;
@@ -176,6 +177,23 @@ document.addEventListener("alpine:init", () => {
 
     get shown() {
       return this.width > Settings.options.minimalWidth;
+    },
+
+  }));
+
+  Alpine.data("Image", () => ({
+
+    src: null,
+    width: null,
+
+    async init() {
+      await this.getImageSrc();
+    },
+
+    async getImageSrc() {
+      const { src, width } = await Images.getImageInfo(this.url, this.imageBlobs[this.url]);
+      this.src = src;
+      this.width = width;
     },
 
     get selected() {
