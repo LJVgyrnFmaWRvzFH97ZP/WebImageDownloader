@@ -24,11 +24,10 @@ const ImageQueue = {
     }
   },
 
-  download(target_dir, _urls) {
+  download(target_dir, urls, blobs) {
     const timestamp = Date.now();
-    const urls = _urls ?? this.urls;
     urls.forEach((url, index) => {
-      Utils.downloadImage(target_dir, url, index, timestamp);
+      Utils.downloadImage(target_dir, url, blobs[index], index, timestamp);
     });
   },
 
@@ -54,11 +53,8 @@ const Channel = {
       port.onMessage.addListener((message) => {
         switch (message.action) {
           case "save":
-            ImageQueue.download(message.target_dir, message.urls);
+            ImageQueue.download(message.target_dir, message.urls, message.blobs);
             this.finish();
-            break;
-          case "save-all":
-            ImageQueue.download(message.target_dir);
             break;
           case "clean":
             ImageQueue.clean();
@@ -153,7 +149,7 @@ const Utils = {
     const filename = this.resolveFilename(Settings.options.filename, url, index, timestamp)
     const filepath = target_dir ? target_dir + '/' + filename : filename;
     chrome.downloads.download({
-      url: url,
+      url: blob,
       filename: filepath,
       conflictAction: "overwrite",
       saveAs: false

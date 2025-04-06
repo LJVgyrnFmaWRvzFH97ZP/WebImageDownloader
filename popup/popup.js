@@ -11,6 +11,8 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("WebImageDownloaderPopup", () => ({
 
     images: [],
+    imageBlobs: {},
+    shownImages: [],
     selectedImages: new Set(),
 
     urlPaths: [],
@@ -81,11 +83,22 @@ document.addEventListener("alpine:init", () => {
       this.showPages = 1;
     },
 
+    getImageWithBlob(targetImages) {
+      const images = Array.from(targetImages);
+      const blobs = [];
+      for (const image of images) {
+        blobs.push(this.imageBlobs[image]);
+      }
+      return { images, blobs };
+    },
+
     saveSelected() {
       if (port) {
+        const selected = this.getImageWithBlob(this.selectedImages);
         port.postMessage({
           action: "save",
-          urls: Array.from(this.selectedImages),
+          urls: selected.images,
+          blobs: selected.blobs,
           target_dir: this.targetDirectory,
         });
       }
@@ -93,14 +106,20 @@ document.addEventListener("alpine:init", () => {
 
     saveAll() {
       if (port) {
+        const selected = this.getImageWithBlob(this.shownImages);
         port.postMessage({
-          action: "save-all",
+          action: "save",
+          urls: selected.images,
+          blobs: selected.blobs,
           target_dir: this.targetDirectory,
         });
       }
     },
 
     clean() {
+      this.images = [];
+      this.imageBlobs = {};
+      this.shownImages = [];
       this.selectedImages.clear();
       if (port) {
         port.postMessage({ action: "clean" });
@@ -150,6 +169,10 @@ document.addEventListener("alpine:init", () => {
       const { src, width } = await Images.getImageInfo(this.url);
       this.src = src;
       this.width = width;
+      this.imageBlobs[this.url] = src;
+      if (this.shown) {
+        this.shownImages.push(this.url);
+      }
     },
 
     get shown() {
