@@ -35,12 +35,12 @@
       </li>
     </ul>
     <div class="">
-      <div class="flex items-center ">
+      <div class="flex items-center">
         <span>Download to:</span>
         <span x-show="targetDirectory" @click="clearPaths"
           class="cursor-pointer ms-auto w-5 h-5 leading-5 flex items-center shrink-0 justify-center rounded-md bg-gray-300 text-gray-700">x</span>
       </div>
-      <div x-text="targetDirectory" class="underline"></div>
+      <p x-text="targetDirectory" class="text-wrap break-all underline underline-offset-4"></p>
     </div>
     <div class="flex items-center gap-x-1">
       <button @click="saveSelected"
