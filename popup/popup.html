@@ -81,7 +81,7 @@
         </li>
       </template>
     </ul>
-    <ul class="grid grid-cols-4 gap-1 max-h-[300px] overflow-y-scroll hide-scrollbar">
+    <ul class="grid grid-cols-4 gap-1 max-h-[280px] overflow-y-scroll hide-scrollbar">
       <template x-for="url in visibleImages" :key="url">
         <li x-data="Image" @click="toggleSelection" class="relative">
           <img :src="src" class="w-[60px] h-[60px] object-cover rounded-md cursor-pointer">
