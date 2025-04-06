@@ -26,20 +26,37 @@ document.addEventListener("alpine:init", () => {
       this.connect();
     },
 
-    connect() {
-      port = chrome.runtime.connect({ name: "popup" });
-      port.onMessage.addListener(async (message) => {
-        switch (message.action) {
-          case "update":
-            this.images = message.urls;
-            break;
-          case "finish":
-            this.selectedImages.clear();
-            break;
-          default:
-            break;
+    connect(retries = 5) {
+      if (port) {
+        return;
+      }
+      try {
+        port = chrome.runtime.connect({ name: "popup" });
+        port.onDisconnect.addListener(() => {
+          port = null;
+          console.info("Port disconnected");
+          setTimeout(() => this.connect(), 1000);
+        });
+        port.onMessage.addListener(async (message) => {
+          switch (message.action) {
+            case "update":
+              this.images = message.urls;
+              break;
+            case "finish":
+              this.selectedImages.clear();
+              break;
+            default:
+              break;
+          }
+        });
+      } catch (error) {
+        console.info('failed to connect background, ' + error);
+        if (retries > 0) {
+          setTimeout(() => this.connect(retries - 1), 1000);
+        } else {
+          console.error('[FATAL] failed to connect to backgound')
         }
-      });
+      }
     },
 
     async getPaths() {
@@ -99,10 +116,20 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
+    postMessage(message) {
+      if (port) {
+        try {
+          port.postMessage(message);
+        } catch (error) {
+          console.error('failed to post message: ' + error);
+        }
+      }
+    },
+
     saveSelected() {
       if (port) {
         const selected = this.getImageWithBlob(this.selectedImages);
-        port.postMessage({
+        this.postMessage({
           action: "save",
           urls: selected.images,
           blobs: selected.blobs,
@@ -114,7 +141,7 @@ document.addEventListener("alpine:init", () => {
     saveAll() {
       if (port) {
         const selected = this.getImageWithBlob(this.shownImages);
-        port.postMessage({
+        this.postMessage({
           action: "save",
           urls: selected.images,
           blobs: selected.blobs,
@@ -130,7 +157,7 @@ document.addEventListener("alpine:init", () => {
       this.selectedImages.clear();
       this.showPages = 1;
       if (port) {
-        port.postMessage({ action: "clean" });
+        this.postMessage({ action: "clean" });
       }
     },
 
