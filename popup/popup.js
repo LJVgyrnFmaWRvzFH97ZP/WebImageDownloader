@@ -6,8 +6,6 @@ document.addEventListener("alpine:init", () => {
 
   let port = null;
 
-  Settings.init();
-
   Alpine.data("WebImageDownloaderPopup", () => ({
 
     images: [],
@@ -23,8 +21,9 @@ document.addEventListener("alpine:init", () => {
     showPages: 1,
 
     async init() {
-      this.connect();
+      await Settings.init();
       await this.getPaths();
+      this.connect();
     },
 
     connect() {
