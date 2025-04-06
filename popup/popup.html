@@ -10,11 +10,21 @@
   <script defer src="../dist/js/alpine-csp.min.js"></script>
 </head>
 
-<body x-data="WebImageDownloaderPopup" class="w-[320px]">
-  <div class="text-white bg-purple-900 p-3 flex items-center">
-    <span class="text-2xl font-bold">Web Image Downloader</span>
+<body x-data="WebImageDownloaderPopup" class="w-[320px] p-3">
+  <div class="flex items-center gap-x-2 bg-purple-300 text-purple-700 text-lg text-center font-bold p-3 rounded-md">
+    <span>Web Image Downloader</span>
+    <span @click="openSettings"
+      class="ms-auto p-2 hover:bg-purple-100 rounded-full cursor-pointer transition duration-150">
+      <svg t="1743943377708" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+        p-id="2311" width="16" height="16">
+        <path
+          d="M512 661.994667q61.994667 0 106.005333-44.010667t44.010667-106.005333-44.010667-106.005333-106.005333-44.010667-106.005333 44.010667-44.010667 106.005333 44.010667 106.005333 106.005333 44.010667zM829.994667 554.005333l90.005333 69.994667q13.994667 10.005333 4.010667 28.010667l-85.994667 148.010667q-8 13.994667-26.005333 8l-106.005333-42.005333q-42.005333 29.994667-72 42.005333l-16 112q-4.010667 18.005333-20.010667 18.005333l-172.010667 0q-16 0-20.010667-18.005333l-16-112q-37.994667-16-72-42.005333l-106.005333 42.005333q-18.005333 5.994667-26.005333-8l-85.994667-148.010667q-10.005333-18.005333 4.010667-28.010667l90.005333-69.994667q-2.005333-13.994667-2.005333-42.005333t2.005333-42.005333l-90.005333-69.994667q-13.994667-10.005333-4.010667-28.010667l85.994667-148.010667q8-13.994667 26.005333-8l106.005333 42.005333q42.005333-29.994667 72-42.005333l16-112q4.010667-18.005333 20.010667-18.005333l172.010667 0q16 0 20.010667 18.005333l16 112q37.994667 16 72 42.005333l106.005333-42.005333q18.005333-5.994667 26.005333 8l85.994667 148.010667q10.005333 18.005333-4.010667 28.010667l-90.005333 69.994667q2.005333 13.994667 2.005333 42.005333t-2.005333 42.005333z"
+          fill="#222222" p-id="2312"></path>
+      </svg>
+    </span>
   </div>
-  <div class="flex flex-col space-y-2 p-3">
+  </div>
+  <div class="flex flex-col space-y-2 mt-3">
     <ul class="flex items-center flex-wrap gap-1">
       <template x-for="path in paths" :key="path">
         <li x-data="Path" x-text="path" @click="toggleSelection"
@@ -34,13 +44,14 @@
           class="bg-gray-300 text-gray-700 cursor-pointer rounded-md text-sm px-2 py-1">x</span>
       </li>
     </ul>
-    <div class="">
+    <div x-show="targetDirectory" class="bg-orange-100 text-orange-700 p-3 rounded-md">
       <div class="flex items-center">
         <span>Download to:</span>
-        <span x-show="targetDirectory" @click="clearPaths"
-          class="cursor-pointer ms-auto w-5 h-5 leading-5 flex items-center shrink-0 justify-center rounded-md bg-gray-300 text-gray-700">x</span>
+        <span @click="clearPaths"
+          class="cursor-pointer ms-auto text-sm w-6 h-6 leading-6 text-center rounded-full hover:bg-white transition duration-150">x</span>
       </div>
-      <p x-text="targetDirectory" class="text-wrap break-all underline underline-offset-4"></p>
+      <p x-text="targetDirectory"
+        class="font-semibold tracking-wide text-md text-wrap break-all underline underline-offset-4"></p>
     </div>
     <div class="flex items-center gap-x-1">
       <button @click="saveSelected"

@@ -91,6 +91,14 @@ document.addEventListener("alpine:init", () => {
       return { images, blobs };
     },
 
+    openSettings() {
+      if (chrome.runtime.openOptionsPage) {
+        chrome.runtime.openOptionsPage();
+      } else {
+        window.open(chrome.runtime.getURL('options.html'));
+      }
+    },
+
     saveSelected() {
       if (port) {
         const selected = this.getImageWithBlob(this.selectedImages);
