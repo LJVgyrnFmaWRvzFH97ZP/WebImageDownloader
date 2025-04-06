@@ -6,7 +6,7 @@ export const Images = {
       const width = await this.getImageSize(src);
       return { src, width };
     } catch (error) {
-      console.error("Error getting image source:", error);
+      console.warn("Error getting image info:", error);
       return null;
     }
   },
@@ -18,7 +18,7 @@ export const Images = {
       const src = URL.createObjectURL(blob);
       return src;
     } catch (error) {
-      console.error("Error getting image source:", error);
+      console.warn("Error getting image source:", error);
       return null;
     }
   },
