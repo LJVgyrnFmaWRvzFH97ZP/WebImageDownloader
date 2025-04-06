@@ -137,7 +137,19 @@ const Utils = {
     return '';
   },
 
-  downloadImage(target_dir, url, index, timestamp) {
+  getRootDomain(domain) {
+    const parts = domain.split('.');
+    if (parts.length > 2) {
+      return parts.slice(-2).join('.');
+    }
+    return domain;
+  },
+
+  extractDomain(url) {
+    return new URL(url).hostname;
+  },
+
+  downloadImage(target_dir, url, blob, index, timestamp) {
     const filename = this.resolveFilename(Settings.options.filename, url, index, timestamp)
     const filepath = target_dir ? target_dir + '/' + filename : filename;
     chrome.downloads.download({
@@ -153,26 +165,68 @@ const Utils = {
 const Intercepter = {
 
   listener: null,
+  seenDomains: new Set(),
 
   init() {
     this.updateListener(Settings.formats, Settings.options.customUrlPatterns);
     this.watchFormats();
   },
 
+  addRefererRule(ruleId, domain, referer) {
+    chrome.declarativeNetRequest.updateDynamicRules({
+      removeRuleIds: [ruleId],
+      addRules: [{
+        id: ruleId,
+        priority: 1,
+        action: {
+          type: "modifyHeaders",
+          requestHeaders: [{
+            header: "referer",
+            operation: "set",
+            value: `https://${domain}`
+          }]
+        },
+        condition: {
+          urlFilter: `*://${domain}/*`,
+          resourceTypes: ["xmlhttprequest", "image", "script", "sub_frame"]
+        }
+      }]
+    }, () => {
+      console.log(`[DNR] Rule added: ${ruleId}. [${domain}] with Referer → ${referer}`);
+    });
+  },
+
+  checkRerferRule(url) {
+    const domain = Utils.extractDomain(url);
+    const referer = Utils.getRootDomain(domain);
+    if (this.seenDomains.has(domain)) return null;
+    this.seenDomains.add(domain);
+    const ruleId = this.seenDomains.size;
+    return { ruleId, domain, referer };
+  },
+
   getListener() {
     return (details) => {
       ImageQueue.insert(details.url);
+      const refererRule = this.checkRerferRule(details.url);
+      if (refererRule) {
+        this.addRefererRule(refererRule.ruleId, refererRule.domain, refererRule.referer);
+      }
     }
   },
 
   updateListener(formats, customUrlPatterns) {
     if (this.listener) {
-      chrome.webRequest.onBeforeRequest.removeListener(this.listener);
+      chrome.webRequest.onBeforeSendHeaders.removeListener(this.listener);
     }
     this.listener = this.getListener();
     const urls = formats.map(ext => `*://*/*.${ext.toLowerCase()}*`);
     const customUrls = customUrlPatterns !== "" ? customUrlPatterns.split(',') : [];
-    chrome.webRequest.onBeforeRequest.addListener(this.listener, { urls: urls.concat(customUrls) });
+    chrome.webRequest.onBeforeSendHeaders.addListener(
+      this.listener,
+      { urls: urls.concat(customUrls) },
+      ["requestHeaders"]
+    );
   },
 
   watchFormats() {

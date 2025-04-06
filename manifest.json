@@ -11,6 +11,8 @@
   },
   "permissions": [
     "webRequest",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
     "downloads",
     "tabs",
     "storage"
