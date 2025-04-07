@@ -91,6 +91,18 @@ document.addEventListener("alpine:init", () => {
       return this.showPages > 1;
     },
 
+    get saveSelectedDisabled() {
+      return !this.selectedImages.size;
+    },
+
+    get saveAllDisabled() {
+      return !this.shownImages.length;
+    },
+
+    get cleanDisabled() {
+      return !this.shownImages.length;
+    },
+
     loadMore() {
       this.showPages++;
     },

@@ -54,16 +54,16 @@
         class="font-semibold tracking-wide text-md text-wrap break-all underline underline-offset-4"></p>
     </div>
     <div class="flex items-center gap-x-1">
-      <button @click="saveSelected"
-        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-300 text-green-700 rounded-md">
+      <button @click="saveSelected" :disabled="saveSelectedDisabled"
+        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-300 text-green-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
         Save Selected
       </button>
-      <button @click="saveAll"
-        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-blue-300 text-blue-700 rounded-md">
+      <button @click="saveAll" :disabled="saveAllDisabled"
+        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-blue-300 text-blue-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
         Save All
       </button>
-      <button @click="clean"
-        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-pink-300 text-pink-700 rounded-md">
+      <button @click="clean" :disabled="cleanDisabled"
+        class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-pink-300 text-pink-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
         Clean
       </button>
       <div class="ms-auto rounded-md overflow-hidden flex items-center">
