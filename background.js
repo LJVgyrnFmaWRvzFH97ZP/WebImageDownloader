@@ -211,16 +211,21 @@ const Intercepter = {
     }
   },
 
+  getFilterUrls(formats, customUrlPatterns) {
+    const urls = formats.map(ext => `*://*/*.${ext.toLowerCase()}*`);
+    const customUrls = customUrlPatterns !== "" ? customUrlPatterns.split(',') : [];
+    return urls.concat(customUrls);
+  },
+
   updateListener(formats, customUrlPatterns) {
     if (this.listener) {
       chrome.webRequest.onBeforeSendHeaders.removeListener(this.listener);
     }
     this.listener = this.getListener();
-    const urls = formats.map(ext => `*://*/*.${ext.toLowerCase()}*`);
-    const customUrls = customUrlPatterns !== "" ? customUrlPatterns.split(',') : [];
+    const urls = this.getFilterUrls(formats, customUrlPatterns);
     chrome.webRequest.onBeforeSendHeaders.addListener(
       this.listener,
-      { urls: urls.concat(customUrls) },
+      { urls },
       ["requestHeaders"]
     );
   },
