@@ -1,0 +1,65 @@
+{
+  "extName": {
+    "message": "웹 이미지 다운로드"
+  },
+  "extDescription": {
+    "message": "웹 페이지에서 여러 이미지를 한 번의 클릭으로 쉽게 다운로드 할 수 있습니다. 간단하고 빠르며 효율적입니다."
+  },
+  "downloadTo": {
+    "message": "다운로드 위치"
+  },
+  "saveSelected": {
+    "message": "선택한 저장"
+  },
+  "saveAll": {
+    "message": "모든 저장"
+  },
+  "clean": {
+    "message": "정리"
+  },
+  "loadMore": {
+    "message": "더 보기"
+  },
+  "loadLess": {
+    "message": "덜 보기"
+  },
+  "optionTitle": {
+    "message": "웹 이미지 다운로드 설정"
+  },
+  "reset": {
+    "message": "초기화"
+  },
+  "save": {
+    "message": "저장"
+  },
+  "imageFormat": {
+    "message": "이미지 형식"
+  },
+  "imageFormatDescription": {
+    "message": "감지할 대상 이미지 형식."
+  },
+  "pageSize": {
+    "message": "페이지 크기"
+  },
+  "pageSizeDescription": {
+    "message": "한 번에 표시할 이미지 수."
+  },
+  "minimalWidth": {
+    "message": "최소 이미지 너비"
+  },
+  "minimalWidthDescription": {
+    "message": "감지할 이미지의 최소 너비."
+  },
+  "filename": {
+    "message": "파일명"
+  },
+  "filenameDescription": {
+    "message": "다운로드된 이미지의 파일명 형식."
+  },
+  "customUrlPatterns": {
+    "message": "사용자 정의 URL 패턴"
+  },
+  "customUrlPatternsDescription": {
+    "message": "이미지 URL을 가로채기 위한 사용자 정의 패턴을 정의합니다 (쉼표로 구분)."
+  }
+}

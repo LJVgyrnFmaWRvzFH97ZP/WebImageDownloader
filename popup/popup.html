@@ -12,7 +12,7 @@
 
 <body x-data="WebImageDownloaderPopup" class="w-[320px] p-3">
   <div class="flex items-center gap-x-2 bg-purple-300 text-purple-700 text-lg text-center font-bold p-3 rounded-md">
-    <span>Web Image Downloader</span>
+    <span x-text="messages.title"></span>
     <span @click="openSettings"
       class="ms-auto p-2 hover:bg-purple-100 rounded-full cursor-pointer transition duration-150">
       <svg t="1743943377708" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +46,7 @@
     </ul>
     <div x-show="targetDirectory" class="bg-orange-100 text-orange-700 p-3 rounded-md">
       <div class="flex items-center">
-        <span>Download to:</span>
+        <span x-text="messages.downloadTo"></span>:
         <span @click="clearPaths"
           class="cursor-pointer ms-auto text-sm w-6 h-6 leading-6 text-center rounded-full hover:bg-white transition duration-150">x</span>
       </div>
@@ -54,19 +54,16 @@
         class="font-semibold tracking-wide text-md text-wrap break-all underline underline-offset-4"></p>
     </div>
     <div class="flex items-center gap-x-1">
-      <button @click="saveSelected" :disabled="saveSelectedDisabled"
+      <button x-text="messages.saveSelected" @click="saveSelected" :disabled="saveSelectedDisabled"
         class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-300 text-green-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
-        Save Selected
       </button>
-      <button @click="saveAll" :disabled="saveAllDisabled"
+      <button x-text="messages.saveAll" @click="saveAll" :disabled="saveAllDisabled"
         class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-blue-300 text-blue-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
-        Save All
       </button>
-      <button @click="clean" :disabled="cleanDisabled"
+      <button x-text="messages.clean" @click="clean" :disabled="cleanDisabled"
         class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-pink-300 text-pink-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
-        Clean
       </button>
-      <div class="ms-auto rounded-md overflow-hidden flex items-center">
+      <div class="ms-auto rounded-md overflow-hidden shrink-0 flex items-center">
         <span x-text="selectedCount"
           class="w-3 h-3 p-3 bg-green-500 text-white font-bold flex items-center justify-center">
         </span>
@@ -93,13 +90,11 @@
       </template>
     </ul>
     <div class="flex items-center gap-x-1">
-      <button @click="loadMore" x-show="loadMoreAvailable"
+      <button x-text="messages.loadMore" @click="loadMore" x-show="loadMoreAvailable"
         class="flex-1 hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-100 text-green-600 rounded-md">
-        Load More
       </button>
-      <button @click="loadLess" x-show="loadLessAvailable"
+      <button x-text="messages.loadLess" @click="loadLess" x-show="loadLessAvailable"
         class="flex-1 hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-red-100 text-red-600 rounded-md">
-        Load Less
       </button>
     </div>
   </div>

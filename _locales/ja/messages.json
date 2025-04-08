@@ -1,0 +1,65 @@
+{
+  "extName": {
+    "message": "Web 画像ダウンローダー"
+  },
+  "extDescription": {
+    "message": "ウェブページから複数の画像をワンクリックで簡単にダウンロードできます。シンプルで速く、効率的です。"
+  },
+  "downloadTo": {
+    "message": "ダウンロード先"
+  },
+  "saveSelected": {
+    "message": "選択した保存"
+  },
+  "saveAll": {
+    "message": "すべて保存する"
+  },
+  "clean": {
+    "message": "クリーン"
+  },
+  "loadMore": {
+    "message": "もっと読み込む"
+  },
+  "loadLess": {
+    "message": "もっと少なく読み込む"
+  },
+  "optionTitle": {
+    "message": "Web 画像ダウンローダー 設定"
+  },
+  "reset": {
+    "message": "リセット"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "imageFormat": {
+    "message": "画像形式"
+  },
+  "imageFormatDescription": {
+    "message": "検出する対象画像形式。"
+  },
+  "pageSize": {
+    "message": "ページサイズ"
+  },
+  "pageSizeDescription": {
+    "message": "一度に表示する画像の数。"
+  },
+  "minimalWidth": {
+    "message": "最小画像幅"
+  },
+  "minimalWidthDescription": {
+    "message": "検出する画像の最小幅。"
+  },
+  "filename": {
+    "message": "ファイル名"
+  },
+  "filenameDescription": {
+    "message": "ダウンロードした画像のファイル名形式。"
+  },
+  "customUrlPatterns": {
+    "message": "カスタム URL パターン"
+  },
+  "customUrlPatternsDescription": {
+    "message": "画像URLをインターセプトするためのカスタムパターンを定義します（カンマ区切り）。"
+  }
+}

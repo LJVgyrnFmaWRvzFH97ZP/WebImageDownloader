@@ -12,21 +12,22 @@
 
 <body x-data="WebImageDownloaderOptions" class="w-11/12 max-w-[768px] mx-auto pb-5">
   <div class="sticky top-0 py-5 bg-white">
-    <div class="relative py-4 rounded-md text-center text-xl font-semibold bg-purple-100 text-purple-600">
-      Web Image Downloader Settings
+    <div class="relative font-semibold">
+      <div x-text="messages.title"
+        class="py-4 rounded-md text-center text-xl font-semibold bg-purple-100 text-purple-600"></div>
       <div
         class="flex items-center gap-x-3 absolute bottom-0 right-0 translate-y-full bg-white ps-5 py-5 rounded-bl-md">
-        <button @click="resetSettings"
-          class="text-sm hover:opacity-70 cursor-pointer px-5 py-2 bg-red-300 text-red-700 rounded-md">RESET</button>
-        <button @click="saveSettings"
-          class="text-sm hover:opacity-70 cursor-pointer px-5 py-2 bg-green-300 text-green-700 rounded-md">SAVE</button>
+        <button x-text="messages.reset" @click="resetSettings"
+          class="text-sm hover:opacity-70 cursor-pointer px-5 py-2 bg-red-300 text-red-700 rounded-md"></button>
+        <button x-text="messages.save" @click="saveSettings"
+          class="text-sm hover:opacity-70 cursor-pointer px-5 py-2 bg-green-300 text-green-700 rounded-md"></button>
       </div>
     </div>
   </div>
   <ul class="text-lg flex flex-col gap-y-3 rounded-md">
     <div class="flex flex-col">
-      <label class="font-semibold">Image Format</label>
-      <div class="text-sm text-gray-600">Target image format to detect.</div>
+      <label x-text="messages.imageFormat" class="font-semibold"></label>
+      <div x-text="messages.imageFormatDescription" class="text-sm text-gray-600"></div>
       <div class="flex gap-x-3 mt-2">
         <template x-for="format in formats.avaliable">
           <div x-data="WebImageDownloaderFormat" class="bg-gray-100 px-3 py-1 rounded-lg">

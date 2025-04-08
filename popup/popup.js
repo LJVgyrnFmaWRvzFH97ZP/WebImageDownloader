@@ -8,6 +8,8 @@ document.addEventListener("alpine:init", () => {
 
   Alpine.data("WebImageDownloaderPopup", () => ({
 
+    messages: null,
+
     images: [],
     imageBlobs: {},
     shownImages: [],
@@ -21,9 +23,22 @@ document.addEventListener("alpine:init", () => {
     showPages: 1,
 
     async init() {
+      this.initMessages();
       await Settings.init();
       await this.getPaths();
       this.connect();
+    },
+
+    initMessages() {
+      this.messages = {
+        title: chrome.i18n.getMessage('extName'),
+        downloadTo: chrome.i18n.getMessage('downloadTo'),
+        saveSelected: chrome.i18n.getMessage('saveSelected'),
+        saveAll: chrome.i18n.getMessage('saveAll'),
+        clean: chrome.i18n.getMessage('clean'),
+        loadMore: chrome.i18n.getMessage('loadMore'),
+        loadLess: chrome.i18n.getMessage('loadLess'),
+      };
     },
 
     connect(retries = 5) {

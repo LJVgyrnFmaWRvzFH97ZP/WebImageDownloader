@@ -1,0 +1,65 @@
+{
+  "extName": {
+    "message": "Web Image Downloader"
+  },
+  "extDescription": {
+    "message": "Easily download multiple images from any webpage in one click. Simple, fast, and efficient."
+  },
+  "downloadTo": {
+    "message": "Download to"
+  },
+  "saveSelected": {
+    "message": "Save Selected"
+  },
+  "saveAll": {
+    "message": "Save All"
+  },
+  "clean": {
+    "message": "Clean"
+  },
+  "loadMore": {
+    "message": "Load More"
+  },
+  "loadLess": {
+    "message": "Load Less"
+  },
+  "optionTitle": {
+    "message": "Web Image Downloader Settings"
+  },
+  "reset": {
+    "message": "RESET"
+  },
+  "save": {
+    "message": "SAVE"
+  },
+  "imageFormat": {
+    "message": "Image Format"
+  },
+  "imageFormatDescription": {
+    "message": "Target image format to detect."
+  },
+  "pageSize": {
+    "message": "Page Size"
+  },
+  "pageSizeDescription": {
+    "message": "Number of images to display each time."
+  },
+  "minimalWidth": {
+    "message": "Minimal Image Width"
+  },
+  "minimalWidthDescription": {
+    "message": "Minimal width of images to detect."
+  },
+  "filename": {
+    "message": "Filename"
+  },
+  "filenameDescription": {
+    "message": "Filename format of the downloaded image."
+  },
+  "customUrlPatterns": {
+    "message": "Custom URL Patterns"
+  },
+  "customUrlPatternsDescription": {
+    "message": "Define custom patterns (comma-separated) to intercept image URLs."
+  }
+}

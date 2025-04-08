@@ -4,6 +4,8 @@ document.addEventListener("alpine:init", () => {
 
   Alpine.data("WebImageDownloaderOptions", () => ({
 
+    messages: null,
+
     formats: {
       avaliable: [],
       selected: null,
@@ -45,9 +47,24 @@ document.addEventListener("alpine:init", () => {
     ],
 
     async init() {
+      this.initMessages();
       await Settings.init();
       this.formats.avaliable = Settings.default.formats;
       this.updateOptions();
+    },
+
+    initMessages() {
+      this.messages = {
+        title: chrome.i18n.getMessage('optionTitle'),
+        reset: chrome.i18n.getMessage('reset'),
+        save: chrome.i18n.getMessage('save'),
+        imageFormat: chrome.i18n.getMessage('imageFormat'),
+        imageFormatDescription: chrome.i18n.getMessage('imageFormatDescription'),
+      };
+      this.options.forEach((option) => {
+        option.name = chrome.i18n.getMessage(option.key);
+        option.desc = chrome.i18n.getMessage(`${option.key}Description`);
+      });
     },
 
     updateOptions() {
