@@ -5,6 +5,12 @@
   "extDescription": {
     "message": "ウェブページから複数の画像をワンクリックで簡単にダウンロードできます。シンプルで速く、効率的です。"
   },
+  "previewLoading": {
+    "message": "プレビュー画像を読み込み中..."
+  },
+  "noImagesDetected": {
+    "message": "画像が検出されませんでした..."
+  },
   "downloadTo": {
     "message": "ダウンロード先"
   },

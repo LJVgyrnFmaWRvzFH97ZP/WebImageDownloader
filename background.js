@@ -85,7 +85,7 @@ const Channel = {
         this.port = null;
       })
 
-      this.notify();
+      this.initNotify();
 
     });
   },
@@ -97,6 +97,15 @@ const Channel = {
       path,
       blob,
     });
+  },
+
+  initNotify() {
+    if (!this.port) return;
+    this.port.postMessage({
+      action: "count",
+      count: MediaQueue.get().length,
+    });
+    this.notify();
   },
 
   notify() {

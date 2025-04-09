@@ -5,6 +5,12 @@
   "extDescription": {
     "message": "轻松一键从任何网页下载多个图片。简单、快速且高效。"
   },
+  "previewLoading": {
+    "message": "正在加载预览图像..."
+  },
+  "noImagesDetected": {
+    "message": "未检测到任何图像..."
+  },
   "downloadTo": {
     "message": "下载到"
   },

@@ -5,6 +5,12 @@
   "extDescription": {
     "message": "輕鬆一鍵從任何網頁下載多張圖片。簡單、快速且高效。"
   },
+  "previewLoading": {
+    "message": "正在載入預覽圖片..."
+  },
+  "noImagesDetected": {
+    "message": "未偵測到任何圖片..."
+  },
   "downloadTo": {
     "message": "下載到"
   },

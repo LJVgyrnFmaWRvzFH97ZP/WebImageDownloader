@@ -20,6 +20,21 @@ document.addEventListener("alpine:init", () => {
 
     showPages: 1,
 
+    loading: true,
+    renderedCount: 0,
+
+    calcProgress(renderedCount) {
+      return Math.floor((renderedCount / Math.min(20, this.medias.length)) * 100);
+    },
+
+    get showMediaGrid() {
+      return !this.loading && this.medias.length;
+    },
+
+    get showPrompt() {
+      return !this.loading && !this.medias.length;
+    },
+
     async init() {
       this.initMessages();
       await Settings.init();
@@ -36,6 +51,8 @@ document.addEventListener("alpine:init", () => {
         clean: chrome.i18n.getMessage('clean'),
         loadMore: chrome.i18n.getMessage('loadMore'),
         loadLess: chrome.i18n.getMessage('loadLess'),
+        previewLoading: chrome.i18n.getMessage('previewLoading'),
+        noImagesDetected: chrome.i18n.getMessage('noImagesDetected'),
       };
     },
 
@@ -59,6 +76,13 @@ document.addEventListener("alpine:init", () => {
                 path: message.path,
                 info,
               });
+              break;
+            case 'count':
+              if (!message.count) {
+                setTimeout(() => {
+                  this.setProgress(100);
+                }, 100);
+              }
               break;
             case "update":
               this.medias = message.medias;
@@ -217,6 +241,14 @@ document.addEventListener("alpine:init", () => {
 
   Alpine.data("Image", () => ({
 
+    init() {
+      this.renderedCount++;
+      const progress = this.calcProgress(this.renderedCount);
+      setTimeout(() => {
+        this.setProgress(progress)
+      }, 10 * progress);
+    },
+
     get selected() {
       return this.selectedMedias.has(this.image.path);
     },
@@ -262,6 +294,29 @@ document.addEventListener("alpine:init", () => {
         this.pathValue = '';
       }
     }
+  }));
+
+  Alpine.data("ProgressBar", () => ({
+
+    progress: 0,
+
+    setProgress(progress) {
+      this.progress = Math.min(100, progress);
+      if (progress === 100) {
+        setTimeout(() => {
+          this.loading = false;
+        }, 300);
+      }
+    },
+
+    get status() {
+      return `${this.progress}%`;
+    },
+
+    get width() {
+      return { width: this.status };
+    },
+
   }));
 
 });

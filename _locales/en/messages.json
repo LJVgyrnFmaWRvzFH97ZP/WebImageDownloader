@@ -5,6 +5,12 @@
   "extDescription": {
     "message": "Easily download multiple images from any webpage in one click. Simple, fast, and efficient."
   },
+  "previewLoading": {
+    "message": "Preview image loading..."
+  },
+  "noImagesDetected": {
+    "message": "No images detected ..."
+  },
   "downloadTo": {
     "message": "Download to"
   },

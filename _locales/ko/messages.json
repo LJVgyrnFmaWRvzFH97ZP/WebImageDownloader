@@ -5,6 +5,12 @@
   "extDescription": {
     "message": "웹 페이지에서 여러 이미지를 한 번의 클릭으로 쉽게 다운로드 할 수 있습니다. 간단하고 빠르며 효율적입니다."
   },
+  "previewLoading": {
+    "message": "미리보기 이미지 불러오는 중..."
+  },
+  "noImagesDetected": {
+    "message": "감지된 이미지가 없습니다..."
+  },
   "downloadTo": {
     "message": "다운로드 위치"
   },
