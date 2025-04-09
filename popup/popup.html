@@ -24,7 +24,7 @@
     </span>
   </div>
   </div>
-  <div class="flex flex-col space-y-2 mt-3">
+  <div class="flex flex-col gap-y-2 mt-3">
     <ul class="flex items-center flex-wrap gap-1">
       <template x-for="path in paths" :key="path">
         <li x-data="Path" x-text="path" @click="toggleSelection"
@@ -67,22 +67,15 @@
         <span x-text="selectedCount"
           class="w-3 h-3 p-3 bg-green-500 text-white font-bold flex items-center justify-center">
         </span>
-        <span x-text="imageCount" class="w-3 h-3 p-3 bg-red-500 text-white font-bold flex items-center justify-center">
+        <span x-text="mediaCount" class="w-3 h-3 p-3 bg-red-500 text-white font-bold flex items-center justify-center">
         </span>
       </div>
     </div>
-    <ul class="hidden">
-      <template x-for="url in images" :key="url">
-        <li x-data="ImageTemplate">
-          <img :src="src">
-        </li>
-      </template>
-    </ul>
     <ul class="grid grid-cols-4 gap-1 max-h-[280px] overflow-y-scroll hide-scrollbar">
-      <template x-for="url in visibleImages" :key="url">
+      <template x-for="image in visibleMedias" :key="image.path">
         <li x-data="Image" @click="toggleSelection" class="relative">
-          <img :src="src" class="w-[60px] h-[60px] object-cover rounded-md cursor-pointer">
-          <span x-text="width"
+          <img :src="image.blob" class="w-[60px] h-[60px] object-cover rounded-md cursor-pointer">
+          <span x-text="image.width"
             class="absolute bottom-0 right-0 p-1 rounded-md text-[8px] bg-orange-600 text-white font-semibold"></span>
           <div x-show="selected"
             class="absolute top-0 right-0 w-4 h-4 border-2 border-gray-100 p-1 bg-green-600 rounded-full"></div>

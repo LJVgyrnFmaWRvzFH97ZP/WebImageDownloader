@@ -10,10 +10,8 @@ document.addEventListener("alpine:init", () => {
 
     messages: null,
 
-    images: [],
-    imageBlobs: {},
-    shownImages: [],
-    selectedImages: new Set(),
+    medias: [],
+    selectedMedias: new Set(),
 
     urlPaths: [],
     selectedPaths: [],
@@ -54,11 +52,19 @@ document.addEventListener("alpine:init", () => {
         });
         port.onMessage.addListener(async (message) => {
           switch (message.action) {
+            case 'resolve':
+              const info = await Images.getInfo(message.blob);
+              this.postMessage({
+                action: 'resolve',
+                path: message.path,
+                info,
+              });
+              break;
             case "update":
-              this.images = message.urls;
+              this.medias = message.medias;
               break;
             case "finish":
-              this.selectedImages.clear();
+              this.selectedMedias.clear();
               break;
             default:
               break;
@@ -86,20 +92,20 @@ document.addEventListener("alpine:init", () => {
       return this.selectedPaths.join("/");
     },
 
-    get visibleImages() {
-      return this.shownImages.slice(Math.max(this.shownImages.length - Settings.options.pageSize * this.showPages, 0)).reverse();
+    get visibleMedias() {
+      return this.medias.slice(Math.max(this.medias.length - Settings.options.pageSize * this.showPages, 0)).reverse();
     },
 
-    get imageCount() {
-      return this.shownImages.length;
+    get mediaCount() {
+      return this.medias.length;
     },
 
     get selectedCount() {
-      return this.selectedImages.size;
+      return this.selectedMedias.size;
     },
 
     get loadMoreAvailable() {
-      return this.shownImages.length > Settings.options.pageSize * this.showPages;
+      return this.medias.length > Settings.options.pageSize * this.showPages;
     },
 
     get loadLessAvailable() {
@@ -107,15 +113,15 @@ document.addEventListener("alpine:init", () => {
     },
 
     get saveSelectedDisabled() {
-      return !this.selectedImages.size;
+      return !this.selectedMedias.size;
     },
 
     get saveAllDisabled() {
-      return !this.shownImages.length;
+      return !this.medias.length;
     },
 
     get cleanDisabled() {
-      return !this.shownImages.length;
+      return !this.medias.length;
     },
 
     loadMore() {
@@ -126,13 +132,9 @@ document.addEventListener("alpine:init", () => {
       this.showPages = 1;
     },
 
-    getImageWithBlob(targetImages) {
-      const images = Array.from(targetImages);
-      const blobs = [];
-      for (const image of images) {
-        blobs.push(this.imageBlobs[image]);
-      }
-      return { images, blobs };
+    getSelectedMedias(targetMedias) {
+      const medias = this.medias.filter((media) => targetMedias.has(media.path));
+      return medias;
     },
 
     openSettings() {
@@ -155,11 +157,10 @@ document.addEventListener("alpine:init", () => {
 
     saveSelected() {
       if (port) {
-        const selected = this.getImageWithBlob(this.selectedImages);
+        const medias = this.getSelectedMedias(this.selectedMedias);
         this.postMessage({
           action: "save",
-          urls: selected.images,
-          blobs: selected.blobs,
+          medias: medias,
           target_dir: this.targetDirectory,
         });
       }
@@ -167,21 +168,17 @@ document.addEventListener("alpine:init", () => {
 
     saveAll() {
       if (port) {
-        const selected = this.getImageWithBlob(this.shownImages);
         this.postMessage({
           action: "save",
-          urls: selected.images,
-          blobs: selected.blobs,
+          medias: this.medias,
           target_dir: this.targetDirectory,
         });
       }
     },
 
     clean() {
-      this.images = [];
-      this.imageBlobs = {};
-      this.shownImages = [];
-      this.selectedImages.clear();
+      this.medias = [];
+      this.selectedMedias.clear();
       this.showPages = 1;
       if (port) {
         this.postMessage({ action: "clean" });
@@ -218,55 +215,17 @@ document.addEventListener("alpine:init", () => {
 
   }));
 
-  Alpine.data("ImageTemplate", () => ({
-
-    src: null,
-    width: null,
-
-    async init() {
-      await this.getImageSrc();
-    },
-
-    async getImageSrc() {
-      const { src, width } = await Images.getImageInfo(this.url, this.imageBlobs[this.url]);
-      this.src = src;
-      this.width = width;
-      this.imageBlobs[this.url] = src;
-      if (this.shown) {
-        this.shownImages.push(this.url);
-      }
-    },
-
-    get shown() {
-      return this.width > Settings.options.minimalWidth;
-    },
-
-  }));
-
   Alpine.data("Image", () => ({
 
-    src: null,
-    width: null,
-
-    async init() {
-      await this.getImageSrc();
-    },
-
-    async getImageSrc() {
-      const { src, width } = await Images.getImageInfo(this.url, this.imageBlobs[this.url]);
-      this.src = src;
-      this.width = width;
-    },
-
     get selected() {
-      return this.selectedImages.has(this.url);
+      return this.selectedMedias.has(this.image.path);
     },
 
     toggleSelection() {
-      if (this.selectedImages.has(this.url)) {
-        this.selectedImages.delete(this.url);
+      if (this.selectedMedias.has(this.image.path)) {
+        this.selectedMedias.delete(this.image.path);
       } else {
-        this.selectedImages.add(this.url);
+        this.selectedMedias.add(this.image.path);
       }
     }
 
@@ -304,4 +263,5 @@ document.addEventListener("alpine:init", () => {
       }
     }
   }));
+
 });

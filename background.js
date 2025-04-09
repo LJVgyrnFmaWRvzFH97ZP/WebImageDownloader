@@ -1,6 +1,7 @@
+import { Get } from "./utils/Get.js";
 import { Settings } from "./utils/Settings.js";
 
-const ImageQueue = {
+const MediaQueue = {
 
   urls: null,
   paths: null,
@@ -14,20 +15,32 @@ const ImageQueue = {
     return this.urls;
   },
 
-  insert(url) {
+  async resolve(url) {
     const path = Utils.getOriginalFilename(url);
     if (!path) return;
     if (!this.paths.has(path)) {
-      this.paths.add(path)
-      this.urls.push(url);
-      Channel.notify();
+      this.paths.add(path);
+      const blob = await Get.getBlobUrlBg(url);
+      Channel.resolve(path, blob);
     }
   },
 
-  download(target_dir, urls, blobs) {
+  insert(path, info) {
+    if (!info) {
+      this.paths.delete(path);
+      return;
+    }
+    this.urls.push({
+      path,
+      ...info,
+    });
+    Channel.notify();
+  },
+
+  download(target_dir, medias) {
     const timestamp = Date.now();
-    urls.forEach((url, index) => {
-      Utils.downloadImage(target_dir, url, blobs[index], index, timestamp);
+    medias.forEach((media, index) => {
+      Utils.downloadMedia(target_dir, media.path, media.blob, index, timestamp);
     });
   },
 
@@ -52,12 +65,15 @@ const Channel = {
 
       port.onMessage.addListener((message) => {
         switch (message.action) {
+          case "resolve":
+            MediaQueue.insert(message.path, message.info);
+            break;
           case "save":
-            ImageQueue.download(message.target_dir, message.urls, message.blobs);
+            MediaQueue.download(message.target_dir, message.medias);
             this.finish();
             break;
           case "clean":
-            ImageQueue.clean();
+            MediaQueue.clean();
             this.notify();
             break;
           default:
@@ -74,11 +90,20 @@ const Channel = {
     });
   },
 
+  resolve(path, blob) {
+    if (!this.port) return;
+    this.port.postMessage({
+      action: "resolve",
+      path,
+      blob,
+    });
+  },
+
   notify() {
     if (!this.port) return;
     this.port.postMessage({
       action: "update",
-      urls: ImageQueue.get(),
+      medias: MediaQueue.get(),
     });
   },
 
@@ -114,14 +139,14 @@ const Utils = {
     });
   },
 
-  resolveFilename(option, url, index, timestamp) {
-    const fileparts = this.getOriginalFilename(url).split('.');
-    const originalImageName = fileparts[0];
+  resolveFilename(option, path, index, timestamp) {
+    const fileparts = path.split('.');
+    const originalMediaName = fileparts[0];
     const ext = '.' + fileparts.slice(-1)[0];
     return option.replace(/{(.*?)}/g, (match, key) => {
       if (key === "index") return index.toString();
       if (key === "timestamp") return timestamp.toString();
-      if (key === "original_image_name") return originalImageName;
+      if (key === "original_image_name") return originalMediaName;
       return match;
     }) + ext;
   },
@@ -145,8 +170,8 @@ const Utils = {
     return new URL(url).hostname;
   },
 
-  downloadImage(target_dir, url, blob, index, timestamp) {
-    const filename = this.resolveFilename(Settings.options.filename, url, index, timestamp)
+  downloadMedia(target_dir, path, blob, index, timestamp) {
+    const filename = this.resolveFilename(Settings.options.filename, path, index, timestamp)
     const filepath = target_dir ? target_dir + '/' + filename : filename;
     chrome.downloads.download({
       url: blob,
@@ -184,7 +209,7 @@ const Intercepter = {
         },
         condition: {
           urlFilter: `*://${domain}/*`,
-          resourceTypes: ["xmlhttprequest", "image", "script", "sub_frame"]
+          resourceTypes: ["xmlhttprequest", "media", "script", "sub_frame"]
         }
       }]
     }, () => {
@@ -202,12 +227,12 @@ const Intercepter = {
   },
 
   getListener() {
-    return (details) => {
-      ImageQueue.insert(details.url);
+    return async (details) => {
       const refererRule = this.checkRerferRule(details.url);
       if (refererRule) {
         this.addRefererRule(refererRule.ruleId, refererRule.domain, refererRule.referer);
       }
+      await MediaQueue.resolve(details.url);
     }
   },
 
@@ -251,7 +276,7 @@ const Intercepter = {
 const Task = {
   async init() {
     await Settings.init();
-    ImageQueue.init();
+    MediaQueue.init();
     Channel.init();
     Intercepter.init();
   }
