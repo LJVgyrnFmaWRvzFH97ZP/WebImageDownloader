@@ -197,6 +197,8 @@ const Intercepter = {
   listener: null,
   seenDomains: new Set(),
 
+  formatListener: null,
+
   init() {
     this.updateListener(Settings.formats, Settings.options.customUrlPatterns);
     this.watchFormats();
@@ -264,19 +266,32 @@ const Intercepter = {
     );
   },
 
-  watchFormats() {
-    chrome.storage.onChanged.addListener((changes) => {
+  getFormatListener() {
+    return (changes) => {
       if (changes.webImageDownloaderSettings) {
         this.updateListener(
           changes.webImageDownloaderSettings.newValue.formats,
           changes.webImageDownloaderSettings.newValue.options.customUrlPatterns);
       }
-    });
+    };
+  },
+
+  watchFormats() {
+    if (this.formatListener) {
+      chrome.storage.onChanged.removeListener(this.listener);
+    }
+    this.formatListener = this.getFormatListener();
+    chrome.storage.onChanged.addListener(this.formatListener);
   },
 
   destroy() {
+    if (this.formatListener) {
+      chrome.storage.onChanged.removeListener(this.formatListener);
+      this.formatListener = null;
+    }
     if (this.listener) {
-      chrome.webRequest.onBeforeRequest.removeListener(this.listener);
+      chrome.webRequest.onBeforeSendHeaders.removeListener(this.listener);
+      this.listener = null;
     }
   },
 
@@ -299,6 +314,8 @@ const Popup = {
     if (this.popupWindowId) {
       chrome.windows.update(this.popupWindowId, { focused: true });
     } else {
+      await Settings.init();
+      Intercepter.init();
       chrome.windows.create({
         url: "popup/popup.html",
         type: "popup",
@@ -314,6 +331,7 @@ const Popup = {
 
   closePopup(windowId) {
     if (windowId === this.popupWindowId) {
+      Intercepter.destroy();
       this.popupWindowId = null;
     }
   },
@@ -329,7 +347,6 @@ const Popup = {
 
 const Task = {
   async init() {
-    await Settings.init();
     MediaQueue.init();
     Channel.init();
     await Popup.init();
