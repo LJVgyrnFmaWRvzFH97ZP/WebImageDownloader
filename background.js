@@ -282,12 +282,57 @@ const Intercepter = {
 
 }
 
+const Popup = {
+
+  width: 320,
+  height: 600,
+  screen: null,
+  popupWindowId: null,
+
+  async init() {
+    this.screen = await this.getScreenSize();
+    chrome.action.onClicked.addListener(() => { this.openPopup() });
+    chrome.windows.onRemoved.addListener((windowId) => { this.closePopup(windowId) });
+  },
+
+  async openPopup() {
+    if (this.popupWindowId) {
+      chrome.windows.update(this.popupWindowId, { focused: true });
+    } else {
+      chrome.windows.create({
+        url: "popup/popup.html",
+        type: "popup",
+        width: this.width,
+        height: this.height,
+        left: this.screen.left + this.screen.width - this.width,
+        top: this.screen.top + Math.floor((this.screen.height - this.height) / 2)
+      }, (newWindow) => {
+        this.popupWindowId = newWindow.id;
+      });
+    }
+  },
+
+  closePopup(windowId) {
+    if (windowId === this.popupWindowId) {
+      this.popupWindowId = null;
+    }
+  },
+
+  async getScreenSize() {
+    return new Promise((resolve) => chrome.system.display.getInfo((displays) => {
+      const display = displays[0];
+      resolve(display.workArea);
+    }));
+  },
+
+}
+
 const Task = {
   async init() {
     await Settings.init();
     MediaQueue.init();
     Channel.init();
-    Intercepter.init();
+    await Popup.init();
   }
 }
 

@@ -15,7 +15,8 @@
     "declarativeNetRequestWithHostAccess",
     "downloads",
     "tabs",
-    "storage"
+    "storage",
+    "system.display"
   ],
   "host_permissions": [
     "*://*/*"
@@ -25,7 +26,7 @@
     "type": "module"
   },
   "action": {
-    "default_popup": "popup/popup.html"
+    "default_title": "__MSG_extName__"
   },
   "options_page": "options/options.html",
   "default_locale": "en"
