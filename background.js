@@ -87,7 +87,24 @@ const Channel = {
 
       this.initNotify();
 
+      this.heartbeat();
+
     });
+  },
+
+  postMessage(message) {
+    if (!this.port) return;
+    try {
+      this.port.postMessage(message);
+    } catch (error) {
+      console.error('failed to post message: ' + error);
+    }
+  },
+
+  heartbeat() {
+    setInterval(() => {
+      this.postMessage({ action: 'heartbeat' });
+    }, 25000);
   },
 
   resolve(path, blob) {
@@ -100,8 +117,7 @@ const Channel = {
   },
 
   initNotify() {
-    if (!this.port) return;
-    this.port.postMessage({
+    this.postMessage({
       action: "count",
       count: MediaQueue.get().length,
     });
@@ -109,16 +125,14 @@ const Channel = {
   },
 
   notify() {
-    if (!this.port) return;
-    this.port.postMessage({
+    this.postMessage({
       action: "update",
       medias: MediaQueue.get(),
     });
   },
 
   finish() {
-    if (!this.port) return;
-    this.port.postMessage({
+    this.postMessage({
       action: "finish",
     });
   },

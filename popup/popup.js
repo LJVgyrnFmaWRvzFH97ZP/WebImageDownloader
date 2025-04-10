@@ -84,6 +84,8 @@ document.addEventListener("alpine:init", () => {
             case "finish":
               this.selectedMedias.clear();
               break;
+            case "heartbeat":
+              break;
             default:
               break;
           }
