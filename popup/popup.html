@@ -11,101 +11,104 @@
 </head>
 
 <body x-data="ProgressBar" class="h-full w-full p-3">
-  <div x-data="WebImageDownloaderPopup" class="h-full overflow-y-scroll hide-scrollbar flex flex-col">
-    <div class="sticky top-0 bg-white z-10 flex flex-col gap-y-2 pb-3">
-      <div class="flex items-center gap-x-2 bg-purple-300 text-purple-700 text-lg text-center font-bold p-3 rounded-md">
-        <span x-text="messages.title"></span>
-        <span @click="openSettings"
-          class="ms-auto p-2 hover:bg-purple-100 rounded-full cursor-pointer transition duration-150">
-          <svg t="1743943377708" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-            p-id="2311" width="16" height="16">
-            <path
-              d="M512 661.994667q61.994667 0 106.005333-44.010667t44.010667-106.005333-44.010667-106.005333-106.005333-44.010667-106.005333 44.010667-44.010667 106.005333 44.010667 106.005333 106.005333 44.010667zM829.994667 554.005333l90.005333 69.994667q13.994667 10.005333 4.010667 28.010667l-85.994667 148.010667q-8 13.994667-26.005333 8l-106.005333-42.005333q-42.005333 29.994667-72 42.005333l-16 112q-4.010667 18.005333-20.010667 18.005333l-172.010667 0q-16 0-20.010667-18.005333l-16-112q-37.994667-16-72-42.005333l-106.005333 42.005333q-18.005333 5.994667-26.005333-8l-85.994667-148.010667q-10.005333-18.005333 4.010667-28.010667l90.005333-69.994667q-2.005333-13.994667-2.005333-42.005333t2.005333-42.005333l-90.005333-69.994667q-13.994667-10.005333-4.010667-28.010667l85.994667-148.010667q8-13.994667 26.005333-8l106.005333 42.005333q42.005333-29.994667 72-42.005333l16-112q4.010667-18.005333 20.010667-18.005333l172.010667 0q16 0 20.010667 18.005333l16 112q37.994667 16 72 42.005333l106.005333-42.005333q18.005333-5.994667 26.005333 8l85.994667 148.010667q10.005333 18.005333-4.010667 28.010667l-90.005333 69.994667q2.005333 13.994667 2.005333 42.005333t-2.005333 42.005333z"
-              fill="#222222" p-id="2312"></path>
-          </svg>
-        </span>
+  <div x-data="Paths" class="h-full w-full">
+    <div x-data="WebImageDownloaderPopup" class="h-full overflow-y-scroll hide-scrollbar flex flex-col">
+      <div class="sticky top-0 bg-white z-10 flex flex-col gap-y-2 pb-3">
+        <div
+          class="flex items-center gap-x-2 bg-purple-300 text-purple-700 text-lg text-center font-bold p-3 rounded-md">
+          <span x-text="messages.title"></span>
+          <span @click="openSettings"
+            class="ms-auto p-2 hover:bg-purple-100 rounded-full cursor-pointer transition duration-150">
+            <svg t="1743943377708" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+              p-id="2311" width="16" height="16">
+              <path
+                d="M512 661.994667q61.994667 0 106.005333-44.010667t44.010667-106.005333-44.010667-106.005333-106.005333-44.010667-106.005333 44.010667-44.010667 106.005333 44.010667 106.005333 106.005333 44.010667zM829.994667 554.005333l90.005333 69.994667q13.994667 10.005333 4.010667 28.010667l-85.994667 148.010667q-8 13.994667-26.005333 8l-106.005333-42.005333q-42.005333 29.994667-72 42.005333l-16 112q-4.010667 18.005333-20.010667 18.005333l-172.010667 0q-16 0-20.010667-18.005333l-16-112q-37.994667-16-72-42.005333l-106.005333 42.005333q-18.005333 5.994667-26.005333-8l-85.994667-148.010667q-10.005333-18.005333 4.010667-28.010667l90.005333-69.994667q-2.005333-13.994667-2.005333-42.005333t2.005333-42.005333l-90.005333-69.994667q-13.994667-10.005333-4.010667-28.010667l85.994667-148.010667q8-13.994667 26.005333-8l106.005333 42.005333q42.005333-29.994667 72-42.005333l16-112q4.010667-18.005333 20.010667-18.005333l172.010667 0q16 0 20.010667 18.005333l16 112q37.994667 16 72 42.005333l106.005333-42.005333q18.005333-5.994667 26.005333 8l85.994667 148.010667q10.005333 18.005333-4.010667 28.010667l-90.005333 69.994667q2.005333 13.994667 2.005333 42.005333t-2.005333 42.005333z"
+                fill="#222222" p-id="2312"></path>
+            </svg>
+          </span>
+        </div>
+        <ul class="flex items-center flex-wrap gap-1">
+          <template x-for="path in paths" :key="path">
+            <li x-data="Path" x-text="path" @click="toggleSelection"
+              class="cursor-pointer rounded-md text-sm px-2 py-1 max-w-[100px] truncate" :class="classes">
+            </li>
+          </template>
+          <li x-data="AddButton" class="flex items-center gap-x-1">
+            <span @click="toggleAdding" x-show="showAddButton"
+              class="bg-gray-300 text-gray-700 cursor-pointer rounded-md text-sm px-2 py-1">+</span>
+            <div x-show="showCommitButton" class="flex items-center gap-x-1">
+              <input @change="setPathValue" :value="pathValue"
+                class="focus:outline-none bg-gray-100 text-gray-600 rounded-md px-2 py-1" />
+            </div>
+            <span @click="commitAdding" x-show="showCommitButton"
+              class="bg-gray-300 text-gray-700 cursor-pointer rounded-md text-sm px-2 py-1">√</span>
+            <span @click="toggleAdding" x-show="showCommitButton"
+              class="bg-gray-300 text-gray-700 cursor-pointer rounded-md text-sm px-2 py-1">x</span>
+          </li>
+        </ul>
+        <div x-show="targetDirectory" class="bg-orange-100 text-orange-700 p-3 rounded-md">
+          <div class="flex items-center">
+            <span x-text="messages.downloadTo"></span>:
+            <span @click="clearPaths"
+              class="cursor-pointer ms-auto text-sm w-6 h-6 leading-6 text-center rounded-full hover:bg-white transition duration-150">x</span>
+          </div>
+          <p x-text="targetDirectory"
+            class="font-semibold tracking-wide text-md text-wrap break-all underline underline-offset-4"></p>
+        </div>
+        <div class="flex items-center gap-x-1">
+          <button x-text="messages.saveSelected" @click="saveSelected" :disabled="saveSelectedDisabled"
+            class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-300 text-green-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
+          </button>
+          <button x-text="messages.saveAll" @click="saveAll" :disabled="saveAllDisabled"
+            class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-blue-300 text-blue-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
+          </button>
+          <button x-text="messages.clean" @click="clean" :disabled="cleanDisabled"
+            class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-pink-300 text-pink-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
+          </button>
+          <div class="ms-auto rounded-md overflow-hidden shrink-0 flex items-center">
+            <span x-text="selectedCount"
+              class="w-3 h-3 p-3 bg-green-500 text-white font-bold flex items-center justify-center">
+            </span>
+            <span x-text="mediaCount"
+              class="w-3 h-3 p-3 bg-red-500 text-white font-bold flex items-center justify-center">
+            </span>
+          </div>
+        </div>
+        <div x-show="loading">
+          <div class="bg-gray-100 p-3 rounded-md flex flex-col gap-y-1 justify-center">
+            <div x-text="messages.previewLoading" class="text-blue-400 text-xs text-center"></div>
+            <div class="bg-blue-100 rounded-full overflow-hidden h-3">
+              <div :style="width" class="h-full rounded-full bg-blue-400 transition-all duration-300"></div>
+            </div>
+            <div x-text="status" class="text-blue-500 text-xs text-center font-semibold"></div>
+          </div>
+        </div>
+        <div x-show="showPrompt">
+          <div class="bg-gray-100 h-[76px] rounded-md flex flex-col gap-y-1 justify-center">
+            <div x-text="messages.noImagesDetected" class="text-blue-400 text-xs text-center"></div>
+          </div>
+        </div>
       </div>
-      <ul class="flex items-center flex-wrap gap-1">
-        <template x-for="path in paths" :key="path">
-          <li x-data="Path" x-text="path" @click="toggleSelection"
-            class="cursor-pointer rounded-md text-sm px-2 py-1 max-w-[100px] truncate" :class="classes">
+      <ul x-show="showMediaGrid" class="grid grid-cols-4 gap-1 mb-[48px]">
+        <template x-for="image in visibleMedias" :key="image.path">
+          <li x-data="Image" @click="toggleSelection"
+            class="relative bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+            <img :src="image.blob" class="object-cover cursor-pointer">
+            <span x-text="image.width"
+              class="absolute bottom-0 right-0 p-1 rounded-md text-[8px] bg-orange-600 text-white font-semibold"></span>
+            <div x-show="selected"
+              class="absolute top-0 right-0 w-4 h-4 border-2 border-gray-100 p-1 bg-green-600 rounded-full"></div>
           </li>
         </template>
-        <li x-data="AddButton" class="flex items-center gap-x-1">
-          <span @click="toggleAdding" x-show="showAddButton"
-            class="bg-gray-300 text-gray-700 cursor-pointer rounded-md text-sm px-2 py-1">+</span>
-          <div x-show="showCommitButton" class="flex items-center gap-x-1">
-            <input @change="setPathValue" :value="pathValue"
-              class="focus:outline-none bg-gray-100 text-gray-600 rounded-md px-2 py-1" />
-          </div>
-          <span @click="commitAdding" x-show="showCommitButton"
-            class="bg-gray-300 text-gray-700 cursor-pointer rounded-md text-sm px-2 py-1">√</span>
-          <span @click="toggleAdding" x-show="showCommitButton"
-            class="bg-gray-300 text-gray-700 cursor-pointer rounded-md text-sm px-2 py-1">x</span>
-        </li>
       </ul>
-      <div x-show="targetDirectory" class="bg-orange-100 text-orange-700 p-3 rounded-md">
-        <div class="flex items-center">
-          <span x-text="messages.downloadTo"></span>:
-          <span @click="clearPaths"
-            class="cursor-pointer ms-auto text-sm w-6 h-6 leading-6 text-center rounded-full hover:bg-white transition duration-150">x</span>
-        </div>
-        <p x-text="targetDirectory"
-          class="font-semibold tracking-wide text-md text-wrap break-all underline underline-offset-4"></p>
-      </div>
-      <div class="flex items-center gap-x-1">
-        <button x-text="messages.saveSelected" @click="saveSelected" :disabled="saveSelectedDisabled"
-          class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-300 text-green-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
+      <div x-show="showMediaGrid" class="fixed bottom-0 left-0 right-0 p-3 bg-white flex items-center gap-x-1">
+        <button x-text="messages.loadMore" @click="loadMore" x-show="loadMoreAvailable"
+          class="flex-1 hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-100 text-green-600 rounded-md">
         </button>
-        <button x-text="messages.saveAll" @click="saveAll" :disabled="saveAllDisabled"
-          class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-blue-300 text-blue-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
+        <button x-text="messages.loadLess" @click="loadLess" x-show="loadLessAvailable"
+          class="flex-1 hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-red-100 text-red-600 rounded-md">
         </button>
-        <button x-text="messages.clean" @click="clean" :disabled="cleanDisabled"
-          class="hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-pink-300 text-pink-700 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
-        </button>
-        <div class="ms-auto rounded-md overflow-hidden shrink-0 flex items-center">
-          <span x-text="selectedCount"
-            class="w-3 h-3 p-3 bg-green-500 text-white font-bold flex items-center justify-center">
-          </span>
-          <span x-text="mediaCount"
-            class="w-3 h-3 p-3 bg-red-500 text-white font-bold flex items-center justify-center">
-          </span>
-        </div>
       </div>
-      <div x-show="loading">
-        <div class="bg-gray-100 p-3 rounded-md flex flex-col gap-y-1 justify-center">
-          <div x-text="messages.previewLoading" class="text-blue-400 text-xs text-center"></div>
-          <div class="bg-blue-100 rounded-full overflow-hidden h-3">
-            <div :style="width" class="h-full rounded-full bg-blue-400 transition-all duration-300"></div>
-          </div>
-          <div x-text="status" class="text-blue-500 text-xs text-center font-semibold"></div>
-        </div>
-      </div>
-      <div x-show="showPrompt">
-        <div class="bg-gray-100 h-[76px] rounded-md flex flex-col gap-y-1 justify-center">
-          <div x-text="messages.noImagesDetected" class="text-blue-400 text-xs text-center"></div>
-        </div>
-      </div>
-    </div>
-    <ul x-show="showMediaGrid" class="grid grid-cols-4 gap-1 mb-[48px]">
-      <template x-for="image in visibleMedias" :key="image.path">
-        <li x-data="Image" @click="toggleSelection"
-          class="relative bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
-          <img :src="image.blob" class="object-cover cursor-pointer">
-          <span x-text="image.width"
-            class="absolute bottom-0 right-0 p-1 rounded-md text-[8px] bg-orange-600 text-white font-semibold"></span>
-          <div x-show="selected"
-            class="absolute top-0 right-0 w-4 h-4 border-2 border-gray-100 p-1 bg-green-600 rounded-full"></div>
-        </li>
-      </template>
-    </ul>
-    <div x-show="showMediaGrid" class="fixed bottom-0 left-0 right-0 p-3 bg-white flex items-center gap-x-1">
-      <button x-text="messages.loadMore" @click="loadMore" x-show="loadMoreAvailable"
-        class="flex-1 hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-100 text-green-600 rounded-md">
-      </button>
-      <button x-text="messages.loadLess" @click="loadLess" x-show="loadLessAvailable"
-        class="flex-1 hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-red-100 text-red-600 rounded-md">
-      </button>
     </div>
   </div>
 </body>

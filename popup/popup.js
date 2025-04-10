@@ -13,11 +13,6 @@ document.addEventListener("alpine:init", () => {
     medias: [],
     selectedMedias: new Set(),
 
-    urlPaths: [],
-    selectedPaths: [],
-
-    customPaths: [],
-
     showPages: 1,
 
     loading: true,
@@ -38,7 +33,6 @@ document.addEventListener("alpine:init", () => {
     async init() {
       this.initMessages();
       await Settings.init();
-      await this.getPaths();
       this.connect();
     },
 
@@ -104,17 +98,6 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
-    async getPaths() {
-      this.urlPaths = await Path.getPathSegments();
-    },
-
-    get paths() {
-      return this.urlPaths.concat(this.customPaths);
-    },
-
-    get targetDirectory() {
-      return this.selectedPaths.join("/");
-    },
 
     get visibleMedias() {
       return this.medias.slice(Math.max(this.medias.length - Settings.options.pageSize * this.showPages, 0)).reverse();
@@ -211,6 +194,68 @@ document.addEventListener("alpine:init", () => {
 
     clearPaths() {
       this.selectedPaths = [];
+    },
+
+  }));
+
+  Alpine.data("Paths", () => ({
+
+    urlPaths: [],
+    selectedPaths: [],
+
+    customPaths: [],
+
+    async init() {
+      await this.initPathListener();
+    },
+
+    async initPathListener() {
+      chrome.tabs.onUpdated.addListener(async (_tabId, _changeInfo, tab) => {
+        this.urlPaths = Path.getPathSegments(tab.url);
+      });
+      chrome.tabs.onActivated.addListener((activeInfo) => {
+        chrome.tabs.get(activeInfo.tabId, async (tab) => {
+          this.urlPaths = Path.getPathSegments(tab.url);
+        });
+      });
+      chrome.windows.onFocusChanged.addListener(
+        async (windowId) => {
+          if (windowId !== chrome.windows.WINDOW_ID_NONE) {
+            const tab = await this.getActivatedTab(windowId);
+            if (tab) {
+              this.urlPaths = Path.getPathSegments(tab.url);
+            }
+          }
+        },
+        { windowTypes: ['normal'] }
+      );
+      chrome.windows.getLastFocused(
+        { windowTypes: ['normal'] },
+        async (window) => {
+          const tab = await this.getActivatedTab(window.id);
+          if (tab) {
+            console.log(tab.url);
+            this.urlPaths = Path.getPathSegments(tab.url);
+          }
+        }
+      );
+    },
+
+    async getActivatedTab(windowId) {
+      return new Promise((resolve) => {
+        chrome.tabs.query({ active: true, windowId }, (tabs) => {
+          if (tabs.length === 0) return resolve(null);
+          resolve(tabs[0]);
+        });
+      });
+    },
+
+    get paths() {
+      return this.urlPaths.concat(this.customPaths);
+    },
+
+    get targetDirectory() {
+      return this.selectedPaths.join("/");
     },
 
   }));
