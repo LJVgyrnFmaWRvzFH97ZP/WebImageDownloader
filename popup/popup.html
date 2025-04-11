@@ -101,11 +101,11 @@
         </template>
       </ul>
       <div x-show="showMediaGrid" class="fixed bottom-0 left-0 right-0 p-3 bg-white flex items-center gap-x-1">
-        <button x-text="messages.loadMore" @click="loadMore" x-show="loadMoreAvailable"
-          class="flex-1 hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-100 text-green-600 rounded-md">
-        </button>
-        <button x-text="messages.loadLess" @click="loadLess" x-show="loadLessAvailable"
+        <button x-text="messages.previous" @click="loadPrevious" x-show="loadPreviousAvailable"
           class="flex-1 hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-red-100 text-red-600 rounded-md">
+        </button>
+        <button x-text="messages.next" @click="loadNext" x-show="loadNextAvailable"
+          class="flex-1 hover:opacity-70 cursor-pointer font-semibold px-3 py-2 bg-green-100 text-green-600 rounded-md">
         </button>
       </div>
     </div>

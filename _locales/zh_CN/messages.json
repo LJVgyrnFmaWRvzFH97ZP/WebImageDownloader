@@ -23,11 +23,11 @@
   "clean": {
     "message": "清理"
   },
-  "loadMore": {
-    "message": "加载更多"
+  "previous": {
+    "message": "上一页"
   },
-  "loadLess": {
-    "message": "加载更少"
+  "next": {
+    "message": "下一页"
   },
   "optionTitle": {
     "message": "网页图片下载器设置"

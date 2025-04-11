@@ -23,11 +23,11 @@
   "clean": {
     "message": "정리"
   },
-  "loadMore": {
-    "message": "더 보기"
+  "previous": {
+    "message": "이전"
   },
-  "loadLess": {
-    "message": "덜 보기"
+  "next": {
+    "message": "다음"
   },
   "optionTitle": {
     "message": "웹 이미지 다운로드 설정"

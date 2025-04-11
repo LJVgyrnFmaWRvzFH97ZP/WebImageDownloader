@@ -23,11 +23,11 @@
   "clean": {
     "message": "清理"
   },
-  "loadMore": {
-    "message": "加載更多"
+  "previous": {
+    "message": "上一頁"
   },
-  "loadLess": {
-    "message": "加載更少"
+  "next": {
+    "message": "下一頁"
   },
   "optionTitle": {
     "message": "網頁圖片下載器設定"

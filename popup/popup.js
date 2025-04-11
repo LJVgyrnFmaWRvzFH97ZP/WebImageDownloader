@@ -49,8 +49,8 @@ document.addEventListener("alpine:init", () => {
         saveSelected: chrome.i18n.getMessage('saveSelected'),
         saveAll: chrome.i18n.getMessage('saveAll'),
         clean: chrome.i18n.getMessage('clean'),
-        loadMore: chrome.i18n.getMessage('loadMore'),
-        loadLess: chrome.i18n.getMessage('loadLess'),
+        previous: chrome.i18n.getMessage('previous'),
+        next: chrome.i18n.getMessage('next'),
         previewLoading: chrome.i18n.getMessage('previewLoading'),
         noImagesDetected: chrome.i18n.getMessage('noImagesDetected'),
       };
@@ -115,11 +115,11 @@ document.addEventListener("alpine:init", () => {
       return this.selectedMedias.size;
     },
 
-    get loadMoreAvailable() {
+    get loadNextAvailable() {
       return this.count > Settings.options.pageSize * this.currentPage;
     },
 
-    get loadLessAvailable() {
+    get loadPreviousAvailable() {
       return this.currentPage > 1;
     },
 
@@ -136,15 +136,16 @@ document.addEventListener("alpine:init", () => {
     },
 
     async update(page) {
+      this.currentPage = page;
       this.medias = await this.db.getByPage(Settings.options.pageSize, (page - 1) * Settings.options.pageSize);
     },
 
-    async loadMore() {
-      this.update(++this.currentPage)
+    async loadNext() {
+      await this.update(this.currentPage + 1)
     },
 
-    loadLess() {
-      this.update(--this.currentPage);
+    async loadPrevious() {
+      await this.update(this.currentPage - 1);
     },
 
     openSettings() {

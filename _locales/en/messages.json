@@ -23,11 +23,11 @@
   "clean": {
     "message": "Clean"
   },
-  "loadMore": {
-    "message": "Load More"
+  "previous": {
+    "message": "Previous"
   },
-  "loadLess": {
-    "message": "Load Less"
+  "next": {
+    "message": "Next"
   },
   "optionTitle": {
     "message": "Web Image Downloader Settings"

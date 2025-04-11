@@ -23,11 +23,11 @@
   "clean": {
     "message": "クリーン"
   },
-  "loadMore": {
-    "message": "もっと読み込む"
+  "previous": {
+    "message": "前の"
   },
-  "loadLess": {
-    "message": "もっと少なく読み込む"
+  "next": {
+    "message": "次の"
   },
   "optionTitle": {
     "message": "Web 画像ダウンローダー 設定"
