@@ -189,6 +189,8 @@ document.addEventListener("alpine:init", () => {
       this.medias = [];
       this.selectedMedias.clear();
       this.showPages = 1;
+      this.loading = false;
+      this.renderedCount = 0;
       if (port) {
         this.postMessage({ action: "clean" });
       }
