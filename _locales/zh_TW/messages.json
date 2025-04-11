@@ -8,7 +8,7 @@
   "previewLoading": {
     "message": "正在載入預覽圖片..."
   },
-  "noImagesDetected": {
+  "noMediaDetected": {
     "message": "未偵測到任何圖片..."
   },
   "downloadTo": {

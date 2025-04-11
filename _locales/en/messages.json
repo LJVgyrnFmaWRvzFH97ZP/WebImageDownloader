@@ -8,7 +8,7 @@
   "previewLoading": {
     "message": "Preview image loading..."
   },
-  "noImagesDetected": {
+  "noMediaDetected": {
     "message": "No images detected ..."
   },
   "downloadTo": {

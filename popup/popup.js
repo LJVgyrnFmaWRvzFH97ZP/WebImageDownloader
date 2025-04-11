@@ -52,7 +52,7 @@ document.addEventListener("alpine:init", () => {
         previous: chrome.i18n.getMessage('previous'),
         next: chrome.i18n.getMessage('next'),
         previewLoading: chrome.i18n.getMessage('previewLoading'),
-        noImagesDetected: chrome.i18n.getMessage('noImagesDetected'),
+        noMediaDetected: chrome.i18n.getMessage('noMediaDetected'),
       };
     },
 
