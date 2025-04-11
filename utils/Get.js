@@ -1,13 +1,17 @@
 export const Get = {
 
-  async getBlobUrlBg(url) {
+  async getBlobUrlBg(url, chunkSize = null) {
     try {
-      const response = await fetch(url);
+      const headers = {};
+      if (chunkSize) {
+        headers['Range'] = `bytes=0-${chunkSize}`
+      }
+      const response = await fetch(url, { headers });
       const blob = await response.blob();
       const src = await this.blobToDataUrlBg(blob);
       return src;
     } catch (error) {
-      console.warn("Error getting video source:", error);
+      console.warn("Error getting video source: " + error + ' ' + url);
       return null;
     }
   },
