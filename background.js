@@ -21,7 +21,9 @@ const MediaQueue = {
     if (!this.paths.has(path)) {
       this.paths.add(path);
       const blob = await Get.getBlobUrlBg(url);
-      Channel.resolve(path, blob);
+      if (blob) {
+        Channel.resolve(path, blob);
+      }
     }
   },
 
