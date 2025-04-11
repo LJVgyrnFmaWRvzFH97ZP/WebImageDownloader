@@ -28,7 +28,7 @@ const MediaQueue = {
   },
 
   insert(path, info) {
-    if (!info) {
+    if (Object.keys(info).length === 1) {
       this.paths.delete(path);
       return;
     }
