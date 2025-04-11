@@ -68,7 +68,10 @@ document.addEventListener("alpine:init", () => {
               this.postMessage({
                 action: 'resolve',
                 path: message.path,
-                info,
+                info: {
+                  url: message.url,
+                  ...info,
+                },
               });
               break;
             case 'count':

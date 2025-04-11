@@ -22,7 +22,7 @@ const MediaQueue = {
       this.paths.add(path);
       const blob = await Get.getBlobUrlBg(url);
       if (blob) {
-        Channel.resolve(path, blob);
+        Channel.resolve(url, path, blob);
       }
     }
   },
@@ -109,10 +109,11 @@ const Channel = {
     }, 25000);
   },
 
-  resolve(path, blob) {
+  resolve(url, path, blob) {
     if (!this.port) return;
     this.port.postMessage({
       action: "resolve",
+      url,
       path,
       blob,
     });
@@ -195,11 +196,11 @@ const Utils = {
     return new URL(url).hostname;
   },
 
-  downloadMedia(target_dir, path, blob, index, timestamp) {
+  downloadMedia(target_dir, path, url, index, timestamp) {
     const filename = this.resolveFilename(Settings.options.filename, path, index, timestamp)
     const filepath = target_dir ? target_dir + '/' + filename : filename;
     chrome.downloads.download({
-      url: blob,
+      url,
       filename: filepath,
       conflictAction: "overwrite",
       saveAs: false
