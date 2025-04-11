@@ -1,18 +1,17 @@
 import { Get } from "./utils/Get.js";
+import { MediaDB } from "./utils/DB.js";
 import { Settings } from "./utils/Settings.js";
 
 const MediaQueue = {
 
-  urls: null,
+  db: null,
   paths: null,
 
-  init() {
-    this.urls = [];
+  async init() {
     this.paths = new Set();
-  },
-
-  get() {
-    return this.urls;
+    this.db = new MediaDB();
+    await this.db.init();
+    await this.db.clear();
   },
 
   async resolve(url) {
@@ -27,16 +26,16 @@ const MediaQueue = {
     }
   },
 
-  insert(path, info) {
+  async insert(path, info) {
     if (Object.keys(info).length === 1) {
       this.paths.delete(path);
       return;
     }
-    this.urls.push({
+    await this.db.add({
       path,
       ...info,
-    });
-    Channel.notify();
+    })
+    await Channel.notify();
   },
 
   download(target_dir, medias) {
@@ -46,8 +45,22 @@ const MediaQueue = {
     });
   },
 
-  clean() {
-    this.urls = [];
+  async downloadSelect(target_dir, ids) {
+    const medias = await this.db.getByIds(ids);
+    await this.download(target_dir, medias);
+  },
+
+  async downloadAll(target_dir) {
+    const medias = await this.db.getAll();
+    await this.download(target_dir, medias);
+  },
+
+  async count() {
+    return await this.db.getCount();
+  },
+
+  async clear() {
+    this.db.clear();
     this.paths.clear();
   },
 
@@ -58,25 +71,29 @@ const Channel = {
   port: null,
 
   init() {
-    chrome.runtime.onConnect.addListener((port) => {
+    chrome.runtime.onConnect.addListener(async (port) => {
       if (port.name !== 'popup') {
         return;
       }
 
       this.port = port;
 
-      port.onMessage.addListener((message) => {
+      port.onMessage.addListener(async (message) => {
         switch (message.action) {
           case "resolve":
-            MediaQueue.insert(message.path, message.info);
+            await MediaQueue.insert(message.path, message.info);
             break;
           case "save":
-            MediaQueue.download(message.target_dir, message.medias);
+            await MediaQueue.downloadSelect(message.target_dir, message.medias);
+            this.finish();
+            break;
+          case "save-all":
+            await MediaQueue.downloadAll(message.target_dir);
             this.finish();
             break;
           case "clean":
-            MediaQueue.clean();
-            this.notify();
+            await MediaQueue.clear();
+            await this.notify();
             break;
           default:
             break;
@@ -87,9 +104,9 @@ const Channel = {
         this.port = null;
       })
 
-      this.initNotify();
-
       this.heartbeat();
+
+      await this.notify();
 
     });
   },
@@ -110,8 +127,7 @@ const Channel = {
   },
 
   resolve(url, path, blob) {
-    if (!this.port) return;
-    this.port.postMessage({
+    this.postMessage({
       action: "resolve",
       url,
       path,
@@ -119,18 +135,11 @@ const Channel = {
     });
   },
 
-  initNotify() {
+  async notify() {
+    const count = await MediaQueue.count();
     this.postMessage({
       action: "count",
-      count: MediaQueue.get().length,
-    });
-    this.notify();
-  },
-
-  notify() {
-    this.postMessage({
-      action: "update",
-      medias: MediaQueue.get(),
+      count,
     });
   },
 
@@ -364,7 +373,7 @@ const Popup = {
 
 const Task = {
   async init() {
-    MediaQueue.init();
+    await MediaQueue.init();
     Channel.init();
     await Popup.init();
   }

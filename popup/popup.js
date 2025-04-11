@@ -1,6 +1,7 @@
 import { Path } from "../utils/Paths.js";
 import { Images } from "../utils/Images.js";
 import { Settings } from "../utils/Settings.js";
+import { MediaDB } from "../utils/DB.js";
 
 document.addEventListener("alpine:init", () => {
 
@@ -10,28 +11,33 @@ document.addEventListener("alpine:init", () => {
 
     messages: null,
 
+    db: null,
+    count: 0,
+
     medias: [],
     selectedMedias: new Set(),
 
-    showPages: 1,
+    currentPage: 1,
 
     loading: true,
     renderedCount: 0,
 
     calcProgress(renderedCount) {
-      return Math.floor((renderedCount / Math.min(20, this.medias.length)) * 100);
+      return Math.floor((renderedCount / Math.min(Settings.options.pageSize, this.count)) * 100);
     },
 
     get showMediaGrid() {
-      return !this.loading && this.medias.length;
+      return !this.loading && this.count;
     },
 
     get showPrompt() {
-      return !this.loading && !this.medias.length;
+      return !this.loading && !this.count;
     },
 
     async init() {
       this.initMessages();
+      this.db = new MediaDB();
+      await this.db.init();
       await Settings.init();
       this.connect();
     },
@@ -80,6 +86,8 @@ document.addEventListener("alpine:init", () => {
                   this.setProgress(100);
                 }, 100);
               }
+              this.count = message.count;
+              await this.update(1);
               break;
             case "update":
               this.medias = message.medias;
@@ -103,25 +111,16 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
-
-    get visibleMedias() {
-      return this.medias.slice(Math.max(this.medias.length - Settings.options.pageSize * this.showPages, 0)).reverse();
-    },
-
-    get mediaCount() {
-      return this.medias.length;
-    },
-
     get selectedCount() {
       return this.selectedMedias.size;
     },
 
     get loadMoreAvailable() {
-      return this.medias.length > Settings.options.pageSize * this.showPages;
+      return this.count > Settings.options.pageSize * this.currentPage;
     },
 
     get loadLessAvailable() {
-      return this.showPages > 1;
+      return this.currentPage > 1;
     },
 
     get saveSelectedDisabled() {
@@ -129,24 +128,23 @@ document.addEventListener("alpine:init", () => {
     },
 
     get saveAllDisabled() {
-      return !this.medias.length;
+      return !this.count;
     },
 
     get cleanDisabled() {
-      return !this.medias.length;
+      return !this.count;
     },
 
-    loadMore() {
-      this.showPages++;
+    async update(page) {
+      this.medias = await this.db.getByPage(Settings.options.pageSize, (page - 1) * Settings.options.pageSize);
+    },
+
+    async loadMore() {
+      this.update(++this.currentPage)
     },
 
     loadLess() {
-      this.showPages = 1;
-    },
-
-    getSelectedMedias(targetMedias) {
-      const medias = this.medias.filter((media) => targetMedias.has(media.path));
-      return medias;
+      this.update(--this.currentPage);
     },
 
     openSettings() {
@@ -168,35 +166,27 @@ document.addEventListener("alpine:init", () => {
     },
 
     saveSelected() {
-      if (port) {
-        const medias = this.getSelectedMedias(this.selectedMedias);
-        this.postMessage({
-          action: "save",
-          medias: medias,
-          target_dir: this.targetDirectory,
-        });
-      }
+      this.postMessage({
+        action: "save",
+        medias: Array.from(this.selectedMedias),
+        target_dir: this.targetDirectory,
+      });
     },
 
     saveAll() {
-      if (port) {
-        this.postMessage({
-          action: "save",
-          medias: this.medias,
-          target_dir: this.targetDirectory,
-        });
-      }
+      this.postMessage({
+        action: "save-all",
+        target_dir: this.targetDirectory,
+      });
     },
 
     clean() {
       this.medias = [];
       this.selectedMedias.clear();
-      this.showPages = 1;
+      this.currentPage = 1;
       this.loading = false;
       this.renderedCount = 0;
-      if (port) {
-        this.postMessage({ action: "clean" });
-      }
+      this.postMessage({ action: "clean" });
     },
 
     clearPaths() {
@@ -302,14 +292,14 @@ document.addEventListener("alpine:init", () => {
     },
 
     get selected() {
-      return this.selectedMedias.has(this.image.path);
+      return this.selectedMedias.has(this.image.id);
     },
 
     toggleSelection() {
-      if (this.selectedMedias.has(this.image.path)) {
-        this.selectedMedias.delete(this.image.path);
+      if (this.selectedMedias.has(this.image.id)) {
+        this.selectedMedias.delete(this.image.id);
       } else {
-        this.selectedMedias.add(this.image.path);
+        this.selectedMedias.add(this.image.id);
       }
     }
 
