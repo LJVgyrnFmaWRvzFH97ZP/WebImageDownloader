@@ -26,6 +26,8 @@ document.addEventListener("alpine:init", () => {
 
     downloading: false,
     downloadProgressBar: null,
+    downloadedCount: 0,
+    showDownloadPrompt: false,
 
     pathOptions: null,
 
@@ -177,6 +179,8 @@ document.addEventListener("alpine:init", () => {
           break;
         case 'download-progress':
           this.downloading = false;
+          this.downloadedCount = event.detail.count;
+          this.showDownloadPrompt = true;
           this.selectedMedias.clear();
           break;
         default:
@@ -200,6 +204,10 @@ document.addEventListener("alpine:init", () => {
           console.error('failed to post message: ' + error);
         }
       }
+    },
+
+    closeDownloadPrompt() {
+      this.showDownloadPrompt = false;
     },
 
     setMinWidth(event) {
@@ -411,7 +419,7 @@ document.addEventListener("alpine:init", () => {
         this.progress = Math.min(100, progress)
         if (progress === 100) {
           setTimeout(() => {
-            this.$dispatch('progress-complete', { name: this.name })
+            this.$dispatch('progress-complete', { name: this.name, count: total })
           }, 300);
         }
       }, 10 * progress);

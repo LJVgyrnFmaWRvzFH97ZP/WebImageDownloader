@@ -85,6 +85,14 @@
           <div x-text="status" class="text-emerald-500 text-xs text-center font-semibold"></div>
         </div>
       </div>
+      <div x-show="showDownloadPrompt">
+        <div class="relative bg-emerald-100 h-[76px] rounded-md flex items-center gap-x-1 justify-center">
+          <div x-text="downloadedCount" class="text-emerald-500 text-lg font-semibold text-center"></div>
+          <div class="text-emerald-500 text-sm text-center">images have been saved!</div>
+          <span @click="closeDownloadPrompt"
+            class="absolute top-3 right-3 cursor-pointer ms-auto text-sm w-6 h-6 text-center text-emerald-500 rounded-full hover:bg-white transition duration-150">x</span>
+        </div>
+      </div>
       <div class="flex items-center ps-2 border border-gray-100 rounded-md">
         <label x-text="messages.filterByWidth" class="border-r border-gray-300 pe-2" for="minWidth"></label>
         <input @change="setMinWidth" :value="minWidth" id="minWidth" type="number"
