@@ -24,6 +24,9 @@ document.addEventListener("alpine:init", () => {
     renderedCount: 0,
     loadingProgressBar: null,
 
+    downloading: false,
+    downloadProgressBar: null,
+
     pathOptions: null,
 
     get showMediaGrid() {
@@ -47,6 +50,8 @@ document.addEventListener("alpine:init", () => {
       this.pathOptions = Alpine.$data(this.$refs.pathOptions.firstElementChild);
       this.loadingProgressBar = Alpine.$data(this.$refs.loadingProgressBar.firstElementChild);
       this.loadingProgressBar.name = 'loading-progress';
+      this.downloadProgressBar = Alpine.$data(this.$refs.downloadProgressBar.firstElementChild);
+      this.downloadProgressBar.name = 'download-progress';
     },
 
     initMessages() {
@@ -103,6 +108,9 @@ document.addEventListener("alpine:init", () => {
                 await this.update(1);
               }
               break;
+            case 'process':
+              this.downloadProgressBar.setProgress(message.current, message.total);
+              break;
             case "update":
               this.medias = message.medias;
               break;
@@ -138,15 +146,15 @@ document.addEventListener("alpine:init", () => {
     },
 
     get saveSelectedDisabled() {
-      return !this.selectedMedias.size;
+      return !this.selectedMedias.size || this.downloading;
     },
 
     get saveAllDisabled() {
-      return !this.count;
+      return !this.count || this.downloading;
     },
 
     get cleanDisabled() {
-      return !this.count;
+      return !this.count || this.downloading;
     },
 
     async update(page) {
@@ -166,6 +174,10 @@ document.addEventListener("alpine:init", () => {
       switch (event.detail.name) {
         case 'loading-progress':
           this.loading = false;
+          break;
+        case 'download-progress':
+          this.downloading = false;
+          this.selectedMedias.clear();
           break;
         default:
           break;
@@ -200,6 +212,8 @@ document.addEventListener("alpine:init", () => {
     },
 
     saveSelected() {
+      this.downloadProgressBar.resetProcess();
+      this.downloading = true;
       this.postMessage({
         action: "save",
         medias: Array.from(this.selectedMedias),
@@ -208,6 +222,8 @@ document.addEventListener("alpine:init", () => {
     },
 
     saveAll() {
+      this.downloadProgressBar.resetProcess();
+      this.downloading = true;
       this.postMessage({
         action: "save-all",
         target_dir: this.pathOptions.targetDirectory,
@@ -379,6 +395,10 @@ document.addEventListener("alpine:init", () => {
 
     get width() {
       return { width: this.status };
+    },
+
+    resetProcess() {
+      this.progress = 0;
     },
 
     calcProgress(current, total) {

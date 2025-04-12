@@ -43,11 +43,13 @@ const MediaQueue = {
     await Channel.notify();
   },
 
-  download(target_dir, medias) {
+  async download(target_dir, medias) {
     const timestamp = Date.now();
-    medias.forEach((media, index) => {
-      Utils.downloadMedia(target_dir, media.path, media.blob, index, timestamp);
-    });
+    for (let i = 0; i < medias.length; i++) {
+      const media = medias[i];
+      await Utils.downloadMedia(target_dir, media.path, media.blob, i, timestamp);
+      Channel.process(i + 1, medias.length);
+    }
   },
 
   async downloadSelect(target_dir, ids) {
@@ -137,6 +139,14 @@ const Channel = {
     }, 25000);
   },
 
+  process(current, total) {
+    this.postMessage({
+      action: 'process',
+      current,
+      total,
+    })
+  },
+
   resolve(url, path, blob) {
     this.postMessage({
       action: "resolve",
@@ -223,15 +233,49 @@ const Utils = {
     return new URL(url).hostname;
   },
 
-  downloadMedia(target_dir, path, url, index, timestamp) {
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  },
+
+  chromeDownload(url, filename) {
+    return new Promise((resolve, reject) => {
+      chrome.downloads.download({
+        url,
+        filename,
+        conflictAction: "overwrite",
+        saveAs: false
+      }, (downloadId) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          resolve(downloadId);
+        }
+      });
+    });
+  },
+
+  async downloadMedia(target_dir, path, url, index, timestamp) {
     const filename = this.resolveFilename(Settings.options.filename, path, index, timestamp)
     const filepath = target_dir ? target_dir + '/' + filename : filename;
-    chrome.downloads.download({
-      url,
-      filename: filepath,
-      conflictAction: "overwrite",
-      saveAs: false
-    });
+    try {
+      const downloadId = await this.chromeDownload(url, filepath);
+      return new Promise((resolve) => {
+        const listener = (delta) => {
+          if (delta.id === downloadId && delta.state?.current === "complete") {
+            chrome.downloads.onChanged.removeListener(listener);
+            resolve();
+          }
+          if (delta.id === downloadId && delta.state?.current === "interrupted") {
+            chrome.downloads.onChanged.removeListener(listener);
+            resolve();
+          }
+        };
+        chrome.downloads.onChanged.addListener(listener);
+      });
+    } catch (error) {
+      console.warn(`failed to download ${url}, ${error}`);
+      return;
+    }
   },
 
 }
