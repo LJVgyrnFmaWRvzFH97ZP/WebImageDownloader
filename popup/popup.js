@@ -192,6 +192,10 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
+    openDownloads() {
+      chrome.tabs.create({ url: 'chrome://downloads/' });
+    },
+
     postMessage(message) {
       if (port) {
         try {

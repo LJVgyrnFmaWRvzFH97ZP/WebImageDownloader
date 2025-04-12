@@ -76,13 +76,15 @@
           </span>
         </div>
       </div>
-      <div x-ref="downloadProgressBar" x-show="downloading">
+      <div x-ref="downloadProgressBar" x-show="downloading" class="relative">
         <div x-data="ProgressBar" class="border border-gray-100 p-3 rounded-md flex flex-col gap-y-1 justify-center">
           <div x-text="messages.downloading" class="text-emerald-400 text-xs text-center"></div>
           <div class="bg-emerald-100 border-emerald-400 rounded-full overflow-hidden h-3">
             <div :style="width" class="h-full rounded-full bg-emerald-400 transition-all duration-300"></div>
           </div>
           <div x-text="status" class="text-emerald-500 text-xs text-center font-semibold"></div>
+          <button @click="openDownloads"
+            class="absolute bottom-2 right-3 text-gray-500 underline underline-offset-2">details</a>
         </div>
       </div>
       <div x-show="showDownloadPrompt">
