@@ -39,9 +39,14 @@ document.addEventListener("alpine:init", () => {
       this.db = new MediaDB();
       await this.db.init();
       await Settings.init();
+      this.initRefData();
+      this.connect();
+    },
+
+    initRefData() {
       this.pathOptions = Alpine.$data(this.$refs.pathOptions.firstElementChild);
       this.loadingProgressBar = Alpine.$data(this.$refs.loadingProgressBar.firstElementChild);
-      this.connect();
+      this.loadingProgressBar.name = 'loading-progress';
     },
 
     initMessages() {
@@ -155,6 +160,16 @@ document.addEventListener("alpine:init", () => {
 
     async loadPrevious() {
       await this.update(this.currentPage - 1);
+    },
+
+    handleProcessComplete(event) {
+      switch (event.detail.name) {
+        case 'loading-progress':
+          this.loading = false;
+          break;
+        default:
+          break;
+      }
     },
 
     openSettings() {
@@ -355,6 +370,7 @@ document.addEventListener("alpine:init", () => {
 
   Alpine.data("ProgressBar", () => ({
 
+    name: null,
     progress: 0,
 
     get status() {
@@ -375,7 +391,7 @@ document.addEventListener("alpine:init", () => {
         this.progress = Math.min(100, progress)
         if (progress === 100) {
           setTimeout(() => {
-            this.loading = false;
+            this.$dispatch('progress-complete', { name: this.name })
           }, 300);
         }
       }, 10 * progress);

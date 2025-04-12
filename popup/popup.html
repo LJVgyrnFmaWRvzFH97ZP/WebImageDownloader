@@ -11,7 +11,8 @@
 </head>
 
 <body class="h-full w-full p-3">
-  <div x-data="WebImageDownloaderPopup" class="h-full overflow-y-scroll hide-scrollbar flex flex-col">
+  <div x-data="WebImageDownloaderPopup" @progress-complete="handleProcessComplete"
+    class="h-full overflow-y-scroll hide-scrollbar flex flex-col">
     <div class="sticky top-0 bg-white z-10 flex flex-col gap-y-2 pb-3">
       <div class="flex items-center gap-x-2 bg-purple-300 text-purple-700 text-lg text-center font-bold p-3 rounded-md">
         <span x-text="messages.title"></span>
