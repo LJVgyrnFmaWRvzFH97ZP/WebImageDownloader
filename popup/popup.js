@@ -22,10 +22,7 @@ document.addEventListener("alpine:init", () => {
 
     loading: true,
     renderedCount: 0,
-
-    calcProgress(renderedCount) {
-      return Math.floor((renderedCount / Math.min(Settings.options.pageSize, this.count)) * 100);
-    },
+    loadingProgressBar: null,
 
     get showMediaGrid() {
       return !this.loading && this.count;
@@ -40,6 +37,7 @@ document.addEventListener("alpine:init", () => {
       this.db = new MediaDB();
       await this.db.init();
       await Settings.init();
+      this.loadingProgressBar = Alpine.$data(this.$refs.loadingProgressBar.firstElementChild);
       this.connect();
     },
 
@@ -89,7 +87,7 @@ document.addEventListener("alpine:init", () => {
             case 'count':
               if (!message.count) {
                 setTimeout(() => {
-                  this.setProgress(100);
+                  this.loadingProgressBar.setProgress(1, 1);
                 }, 100);
               }
               if (this.count != message.count) {
@@ -302,10 +300,7 @@ document.addEventListener("alpine:init", () => {
 
     init() {
       this.renderedCount++;
-      const progress = this.calcProgress(this.renderedCount);
-      setTimeout(() => {
-        this.setProgress(progress)
-      }, 10 * progress);
+      this.loadingProgressBar.setProgress(this.renderedCount, Math.min(Settings.options.pageSize, this.count));
     },
 
     get selected() {
@@ -359,21 +354,28 @@ document.addEventListener("alpine:init", () => {
 
     progress: 0,
 
-    setProgress(progress) {
-      this.progress = Math.min(100, progress);
-      if (progress === 100) {
-        setTimeout(() => {
-          this.loading = false;
-        }, 300);
-      }
-    },
-
     get status() {
       return `${this.progress}%`;
     },
 
     get width() {
       return { width: this.status };
+    },
+
+    calcProgress(current, total) {
+      return Math.floor((current / total) * 100);
+    },
+
+    setProgress(current, total) {
+      const progress = this.calcProgress(current, total);
+      setTimeout(() => {
+        this.progress = Math.min(100, progress)
+        if (progress === 100) {
+          setTimeout(() => {
+            this.loading = false;
+          }, 300);
+        }
+      }, 5 * progress);
     },
 
   }));

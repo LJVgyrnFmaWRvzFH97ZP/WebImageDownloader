@@ -10,7 +10,7 @@
   <script defer src="../dist/js/alpine-csp.min.js"></script>
 </head>
 
-<body x-data="ProgressBar" class="h-full w-full p-3">
+<body class="h-full w-full p-3">
   <div x-data="Paths" class="h-full w-full">
     <div x-data="WebImageDownloaderPopup" class="h-full overflow-y-scroll hide-scrollbar flex flex-col">
       <div class="sticky top-0 bg-white z-10 flex flex-col gap-y-2 pb-3">
@@ -80,8 +80,8 @@
           <button x-text="messages.apply"
             class="px-2 py-1 rounded-md text-xs transition duration-150 hover:bg-blue-500 hover:text-white"></button>
         </div>
-        <div x-show="loading">
-          <div class="bg-gray-100 p-3 rounded-md flex flex-col gap-y-1 justify-center">
+        <div x-ref="loadingProgressBar" x-show="loading">
+          <div x-data="ProgressBar" class="bg-gray-100 p-3 rounded-md flex flex-col gap-y-1 justify-center">
             <div x-text="messages.previewLoading" class="text-blue-400 text-xs text-center"></div>
             <div class="bg-blue-100 rounded-full overflow-hidden h-3">
               <div :style="width" class="h-full rounded-full bg-blue-400 transition-all duration-300"></div>
