@@ -24,6 +24,8 @@ document.addEventListener("alpine:init", () => {
     renderedCount: 0,
     loadingProgressBar: null,
 
+    pathOptions: null,
+
     get showMediaGrid() {
       return !this.loading && this.count;
     },
@@ -37,6 +39,7 @@ document.addEventListener("alpine:init", () => {
       this.db = new MediaDB();
       await this.db.init();
       await Settings.init();
+      this.pathOptions = Alpine.$data(this.$refs.pathOptions.firstElementChild);
       this.loadingProgressBar = Alpine.$data(this.$refs.loadingProgressBar.firstElementChild);
       this.connect();
     },
@@ -185,14 +188,14 @@ document.addEventListener("alpine:init", () => {
       this.postMessage({
         action: "save",
         medias: Array.from(this.selectedMedias),
-        target_dir: this.targetDirectory,
+        target_dir: this.pathOptions.targetDirectory,
       });
     },
 
     saveAll() {
       this.postMessage({
         action: "save-all",
-        target_dir: this.targetDirectory,
+        target_dir: this.pathOptions.targetDirectory,
       });
     },
 
@@ -375,7 +378,7 @@ document.addEventListener("alpine:init", () => {
             this.loading = false;
           }, 300);
         }
-      }, 5 * progress);
+      }, 10 * progress);
     },
 
   }));
