@@ -21,14 +21,6 @@ document.addEventListener("alpine:init", () => {
         value: null,
       },
       {
-        key: 'minimalWidth',
-        name: "Minimal Image Width",
-        desc: 'Minimal width of images to detect.',
-        placeholder: '',
-        type: 'number',
-        value: null,
-      },
-      {
         key: 'filename',
         name: "Filename",
         desc: 'Filename format of the downloaded image.',

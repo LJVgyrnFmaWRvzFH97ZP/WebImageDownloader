@@ -73,6 +73,13 @@
             </span>
           </div>
         </div>
+        <div class="flex items-center ps-2 border border-gray-100 rounded-md">
+          <label x-text="messages.filterByWidth" class="border-r border-gray-300 pe-2" for="minWidth"></label>
+          <input @change="setMinWidth" :value="minWidth" id="minWidth" type="number"
+            class="flex-1 mx-2 text-center focus:outline-none" />
+          <button x-text="messages.apply"
+            class="px-2 py-1 rounded-md text-xs transition duration-150 hover:bg-blue-500 hover:text-white"></button>
+        </div>
         <div x-show="loading">
           <div class="bg-gray-100 p-3 rounded-md flex flex-col gap-y-1 justify-center">
             <div x-text="messages.previewLoading" class="text-blue-400 text-xs text-center"></div>

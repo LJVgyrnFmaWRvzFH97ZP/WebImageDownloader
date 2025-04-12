@@ -5,6 +5,12 @@
   "extDescription": {
     "message": "ウェブページから複数の画像をワンクリックで簡単にダウンロードできます。シンプルで速く、効率的です。"
   },
+  "filterByWidth": {
+    "message": "幅でフィルター"
+  },
+  "apply": {
+    "message": "適用"
+  },
   "previewLoading": {
     "message": "プレビュー画像を読み込み中..."
   },

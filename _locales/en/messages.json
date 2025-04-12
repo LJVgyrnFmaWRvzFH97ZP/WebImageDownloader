@@ -5,6 +5,12 @@
   "extDescription": {
     "message": "Easily download multiple images from any webpage in one click. Simple, fast, and efficient."
   },
+  "filterByWidth": {
+    "message": "Filter by width"
+  },
+  "apply": {
+    "message": "Apply"
+  },
   "previewLoading": {
     "message": "Preview image loading..."
   },

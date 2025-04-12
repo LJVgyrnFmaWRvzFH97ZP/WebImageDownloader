@@ -7,14 +7,15 @@ export class MediaDB {
 
   init() {
     return new Promise((resolve, reject) => {
-      const request = indexedDB.open(this.dbName, 2);
+      const request = indexedDB.open(this.dbName, 3);
 
       request.onupgradeneeded = (e) => {
         const db = e.target.result;
         if (db.objectStoreNames.contains(this.storeName)) {
           db.deleteObjectStore(this.storeName);
         }
-        db.createObjectStore(this.storeName, { keyPath: "id", autoIncrement: true });
+        const store = db.createObjectStore(this.storeName, { keyPath: "id", autoIncrement: true });
+        store.createIndex("width_idx", "width");
       };
 
       request.onsuccess = (event) => {
@@ -28,12 +29,15 @@ export class MediaDB {
     });
   }
 
-  getCount() {
+  getCount(minWidth = 0) {
     return new Promise((resolve, reject) => {
       const tx = this.db.transaction(this.storeName, "readonly");
       const store = tx.objectStore(this.storeName);
+      const index = store.index("width_idx");
 
-      const countRequest = store.count();
+      const keyRange = IDBKeyRange.lowerBound(minWidth);
+      const countRequest = index.count(keyRange);
+
       countRequest.onsuccess = () => resolve(countRequest.result);
       countRequest.onerror = (e) => reject(e);
     });
@@ -66,21 +70,21 @@ export class MediaDB {
     });
   }
 
-  getByPage(limit, offset = 0) {
+  getByPage(minWidth = 0, offset = 0, limit = 0) {
     return new Promise((resolve, reject) => {
       const tx = this.db.transaction(this.storeName, "readonly");
       const store = tx.objectStore(this.storeName);
+      const index = store.index("width_idx");
+      const keyRange = IDBKeyRange.lowerBound(minWidth);
 
       const results = [];
       let skipped = 0;
 
-      const cursorReq = store.openCursor(null, "prev");
+      const cursorReq = index.openCursor(keyRange, "prev");
 
       cursorReq.onsuccess = (e) => {
         const cursor = e.target.result;
-        if (!cursor || results.length >= limit) {
-          return resolve(results);
-        }
+        if (!cursor) return resolve(results);
 
         if (skipped < offset) {
           skipped++;
@@ -89,20 +93,15 @@ export class MediaDB {
         }
 
         results.push(cursor.value);
+
+        if (limit > 0 && results.length >= limit) {
+          return resolve(results);
+        }
+
         cursor.continue();
       };
 
       cursorReq.onerror = (e) => reject(e);
-    });
-  }
-
-  async getAll() {
-    return new Promise((resolve, reject) => {
-      const tx = this.db.transaction(this.storeName, "readonly");
-      const store = tx.objectStore(this.storeName);
-      const request = store.getAll();
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
     });
   }
 

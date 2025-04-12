@@ -6,12 +6,17 @@ const MediaQueue = {
 
   db: null,
   paths: null,
+  minWidth: 0,
 
   async init() {
     this.paths = new Set();
     this.db = new MediaDB();
     await this.db.init();
     await this.db.clear();
+  },
+
+  setMinWidth(minWidth) {
+    this.minWidth = minWidth;
   },
 
   async resolve(url) {
@@ -51,12 +56,12 @@ const MediaQueue = {
   },
 
   async downloadAll(target_dir) {
-    const medias = await this.db.getAll();
+    const medias = await this.db.getByPage(this.minWidth);
     await this.download(target_dir, medias);
   },
 
   async count() {
-    return await this.db.getCount();
+    return await this.db.getCount(this.minWidth);
   },
 
   async clear() {
@@ -83,6 +88,10 @@ const Channel = {
           case "resolve":
             await MediaQueue.insert(message.path, message.info);
             break;
+          case "filter":
+            MediaQueue.setMinWidth(message.minWidth);
+            await Channel.notify();
+            break;
           case "save":
             await MediaQueue.downloadSelect(message.target_dir, message.medias);
             this.finish();
@@ -105,6 +114,8 @@ const Channel = {
       })
 
       this.heartbeat();
+
+      this.syncFilter(MediaQueue.minWidth);
 
       await this.notify();
 
@@ -133,6 +144,13 @@ const Channel = {
       path,
       blob,
     });
+  },
+
+  syncFilter(minWidth) {
+    this.postMessage({
+      action: "sync",
+      minWidth,
+    })
   },
 
   async notify() {

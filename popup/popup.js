@@ -13,6 +13,7 @@ document.addEventListener("alpine:init", () => {
 
     db: null,
     count: 0,
+    minWidth: 0,
 
     medias: [],
     selectedMedias: new Set(),
@@ -53,6 +54,8 @@ document.addEventListener("alpine:init", () => {
         next: chrome.i18n.getMessage('next'),
         previewLoading: chrome.i18n.getMessage('previewLoading'),
         noMediaDetected: chrome.i18n.getMessage('noMediaDetected'),
+        filterByWidth: chrome.i18n.getMessage('filterByWidth'),
+        apply: chrome.i18n.getMessage('apply'),
       };
     },
 
@@ -80,14 +83,19 @@ document.addEventListener("alpine:init", () => {
                 },
               });
               break;
+            case 'sync':
+              this.minWidth = message.minWidth;
+              break;
             case 'count':
               if (!message.count) {
                 setTimeout(() => {
                   this.setProgress(100);
                 }, 100);
               }
-              this.count = message.count;
-              await this.update(1);
+              if (this.count != message.count) {
+                this.count = message.count;
+                await this.update(1);
+              }
               break;
             case "update":
               this.medias = message.medias;
@@ -137,7 +145,7 @@ document.addEventListener("alpine:init", () => {
 
     async update(page) {
       this.currentPage = page;
-      this.medias = await this.db.getByPage(Settings.options.pageSize, (page - 1) * Settings.options.pageSize);
+      this.medias = await this.db.getByPage(this.minWidth, (page - 1) * Settings.options.pageSize, Settings.options.pageSize);
     },
 
     async loadNext() {
@@ -164,6 +172,15 @@ document.addEventListener("alpine:init", () => {
           console.error('failed to post message: ' + error);
         }
       }
+    },
+
+    setMinWidth(event) {
+      this.selectedMedias.clear();
+      this.minWidth = parseInt(event.target.value);
+      this.postMessage({
+        action: "filter",
+        minWidth: this.minWidth,
+      })
     },
 
     saveSelected() {
@@ -232,7 +249,6 @@ document.addEventListener("alpine:init", () => {
         async (window) => {
           const tab = await this.getActivatedTab(window.id);
           if (tab) {
-            console.log(tab.url);
             this.urlPaths = Path.getPathSegments(tab.url);
           }
         }

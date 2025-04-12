@@ -5,6 +5,12 @@
   "extDescription": {
     "message": "轻松一键从任何网页下载多个图片。简单、快速且高效。"
   },
+  "filterByWidth": {
+    "message": "按宽度筛选"
+  },
+  "apply": {
+    "message": "应用"
+  },
   "previewLoading": {
     "message": "正在加载预览图像..."
   },

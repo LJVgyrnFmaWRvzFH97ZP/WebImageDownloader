@@ -4,7 +4,6 @@ export const Settings = {
 
   options: {
     pageSize: 0,
-    minimalWidth: 0,
     filename: '',
     customUrlPatterns: '',
   },
@@ -13,7 +12,6 @@ export const Settings = {
     formats: ["JPEG", "JPG", "PNG", "WEBP", "GIF"],
     options: {
       pageSize: 20,
-      minimalWidth: 100,
       filename: '{timestamp}-{index}-{original_image_name}',
       customUrlPatterns: 'https://pbs.twimg.com/media/*,https://www.reddit.com/media/*',
     },
