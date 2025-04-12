@@ -74,13 +74,21 @@ export class MediaDB {
     return new Promise((resolve, reject) => {
       const tx = this.db.transaction(this.storeName, "readonly");
       const store = tx.objectStore(this.storeName);
-      const index = store.index("width_idx");
-      const keyRange = IDBKeyRange.lowerBound(minWidth);
+
+      let cursorSource;
+      let keyRange = null;
+
+      if (minWidth > 0) {
+        cursorSource = store.index("width_idx");
+        keyRange = IDBKeyRange.lowerBound(minWidth);
+      } else {
+        cursorSource = store;
+      }
 
       const results = [];
       let skipped = 0;
 
-      const cursorReq = index.openCursor(keyRange, "prev");
+      const cursorReq = cursorSource.openCursor(keyRange, "prev");
 
       cursorReq.onsuccess = (e) => {
         const cursor = e.target.result;
