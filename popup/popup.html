@@ -78,7 +78,7 @@
       </div>
       <div x-ref="downloadProgressBar" x-show="downloading">
         <div x-data="ProgressBar" class="border border-gray-100 p-3 rounded-md flex flex-col gap-y-1 justify-center">
-          <div class="text-emerald-400 text-xs text-center">Downloading...</div>
+          <div x-text="messages.downloading" class="text-emerald-400 text-xs text-center"></div>
           <div class="bg-emerald-100 border-emerald-400 rounded-full overflow-hidden h-3">
             <div :style="width" class="h-full rounded-full bg-emerald-400 transition-all duration-300"></div>
           </div>
@@ -88,7 +88,8 @@
       <div x-show="showDownloadPrompt">
         <div class="relative bg-emerald-100 h-[76px] rounded-md flex items-center gap-x-1 justify-center">
           <div x-text="downloadedCount" class="text-emerald-500 text-lg font-semibold text-center"></div>
-          <div class="text-emerald-500 text-sm text-center">images have been saved!</div>
+          <div x-text="messages.downloadComplete" class="text-emerald-500 text-sm text-center">
+          </div>
           <span @click="closeDownloadPrompt"
             class="absolute top-3 right-3 cursor-pointer ms-auto text-sm w-6 h-6 text-center text-emerald-500 rounded-full hover:bg-white transition duration-150">x</span>
         </div>

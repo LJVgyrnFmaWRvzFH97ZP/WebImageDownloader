@@ -5,6 +5,12 @@
   "extDescription": {
     "message": "ウェブページから複数の画像をワンクリックで簡単にダウンロードできます。シンプルで速く、効率的です。"
   },
+  "downloading": {
+    "message": "ダウンロード中..."
+  },
+  "downloadComplete": {
+    "message": "枚の画像が保存されました！"
+  },
   "filterByWidth": {
     "message": "幅でフィルター"
   },

@@ -69,6 +69,8 @@ document.addEventListener("alpine:init", () => {
         noMediaDetected: chrome.i18n.getMessage('noMediaDetected'),
         filterByWidth: chrome.i18n.getMessage('filterByWidth'),
         apply: chrome.i18n.getMessage('apply'),
+        downloading: chrome.i18n.getMessage('downloading'),
+        downloadComplete: chrome.i18n.getMessage('downloadComplete'),
       };
     },
 
