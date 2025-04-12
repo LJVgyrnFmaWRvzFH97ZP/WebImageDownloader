@@ -96,11 +96,9 @@ const Channel = {
             break;
           case "save":
             await MediaQueue.downloadSelect(message.target_dir, message.medias);
-            this.finish();
             break;
           case "save-all":
             await MediaQueue.downloadAll(message.target_dir);
-            this.finish();
             break;
           case "clean":
             await MediaQueue.clear();
@@ -168,12 +166,6 @@ const Channel = {
     this.postMessage({
       action: "count",
       count,
-    });
-  },
-
-  finish() {
-    this.postMessage({
-      action: "finish",
     });
   },
 

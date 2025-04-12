@@ -115,12 +115,6 @@ document.addEventListener("alpine:init", () => {
             case 'process':
               this.downloadProgressBar.setProgress(message.current, message.total);
               break;
-            case "update":
-              this.medias = message.medias;
-              break;
-            case "finish":
-              this.selectedMedias.clear();
-              break;
             case "heartbeat":
               break;
             default:
