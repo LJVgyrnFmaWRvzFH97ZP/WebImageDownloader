@@ -268,11 +268,11 @@ document.addEventListener("alpine:init", () => {
 
     async initPathListener() {
       chrome.tabs.onUpdated.addListener(async (_tabId, _changeInfo, tab) => {
-        this.urlPaths = Path.getPathSegments(tab.url);
+        this.urlPaths = Path.getPathSegments(tab.url, tab.title);
       });
       chrome.tabs.onActivated.addListener((activeInfo) => {
         chrome.tabs.get(activeInfo.tabId, async (tab) => {
-          this.urlPaths = Path.getPathSegments(tab.url);
+          this.urlPaths = Path.getPathSegments(tab.url, tab.title);
         });
       });
       chrome.windows.onFocusChanged.addListener(
@@ -280,7 +280,7 @@ document.addEventListener("alpine:init", () => {
           if (windowId !== chrome.windows.WINDOW_ID_NONE) {
             const tab = await this.getActivatedTab(windowId);
             if (tab) {
-              this.urlPaths = Path.getPathSegments(tab.url);
+              this.urlPaths = Path.getPathSegments(tab.url, tab.title);
             }
           }
         },
@@ -291,7 +291,7 @@ document.addEventListener("alpine:init", () => {
         async (window) => {
           const tab = await this.getActivatedTab(window.id);
           if (tab) {
-            this.urlPaths = Path.getPathSegments(tab.url);
+            this.urlPaths = Path.getPathSegments(tab.url, tab.title);
           }
         }
       );
