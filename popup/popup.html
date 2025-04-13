@@ -125,7 +125,7 @@
         <li x-data="Image" @click="toggleSelection"
           class="relative bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
           <img :src="image.blob" class="object-cover cursor-pointer">
-          <span x-text="image.width"
+          <span x-text="resolution"
             class="absolute bottom-0 right-0 p-1 rounded-md text-[8px] bg-orange-600 text-white font-semibold"></span>
           <div x-show="selected"
             class="absolute top-0 right-0 w-4 h-4 border-2 border-gray-100 p-1 bg-green-600 rounded-full"></div>

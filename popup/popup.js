@@ -349,6 +349,10 @@ document.addEventListener("alpine:init", () => {
       this.loadingProgressBar.setProgress(this.renderedCount, Math.min(Settings.options.pageSize, this.count));
     },
 
+    get resolution() {
+      return `${this.image.height}x${this.image.width}`
+    },
+
     get selected() {
       return this.selectedMedias.has(this.image.id);
     },
