@@ -223,6 +223,7 @@ document.addEventListener("alpine:init", () => {
 
     saveSelected() {
       this.downloadProgressBar.resetProcess();
+      this.showDownloadPrompt = false;
       this.downloading = true;
       this.postMessage({
         action: "save",
@@ -233,6 +234,7 @@ document.addEventListener("alpine:init", () => {
 
     saveAll() {
       this.downloadProgressBar.resetProcess();
+      this.showDownloadPrompt = false;
       this.downloading = true;
       this.postMessage({
         action: "save-all",
