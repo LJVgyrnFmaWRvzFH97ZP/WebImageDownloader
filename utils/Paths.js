@@ -6,7 +6,7 @@ export const Path = {
       const domain = url.hostname;
       const pathSegments = url.pathname.split('/').filter(Boolean);
       const titleSegments = title.split(' ').filter(Boolean);
-      return [domain, ...pathSegments, ...titleSegments];
+      return [...new Set([domain, ...pathSegments, ...titleSegments])];
     } catch (error) {
       console.log('failed to extract url: ' + _url);
       return [];
