@@ -5,9 +5,15 @@
   "extDescription": {
     "message": "轻松一键从任何网页下载多个图片。简单、快速且高效。"
   },
+  "details": {
+    "message": "详情"
+  },
+  "view": {
+    "message": "查看"
+  },
   "downloading": {
     "message": "正在下载..."
-  },  
+  },
   "downloadComplete": {
     "message": "张图片已保存！"
   },

@@ -83,8 +83,8 @@
             <div :style="width" class="h-full rounded-full bg-emerald-400 transition-all duration-300"></div>
           </div>
           <div x-text="status" class="text-emerald-500 text-xs text-center font-semibold"></div>
-          <button @click="openDownloads"
-            class="absolute bottom-2 right-3 text-gray-500 underline underline-offset-2">details</a>
+          <button x-text="messages.details" @click="openDownloads"
+            class="absolute bottom-2 right-3 text-gray-500 underline underline-offset-2"></a>
         </div>
       </div>
       <div x-show="showDownloadPrompt">
@@ -94,6 +94,8 @@
           </div>
           <span @click="closeDownloadPrompt"
             class="absolute top-3 right-3 cursor-pointer ms-auto text-sm w-6 h-6 text-center text-emerald-500 rounded-full hover:bg-white transition duration-150">x</span>
+          <button x-text="messages.view" @click="openDownloads"
+            class="absolute bottom-2 right-3 text-emerald-500 font-semibold underline underline-offset-2"></a>
         </div>
       </div>
       <div class="flex items-center ps-2 border border-gray-100 rounded-md">

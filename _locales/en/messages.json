@@ -5,6 +5,12 @@
   "extDescription": {
     "message": "Easily download multiple images from any webpage in one click. Simple, fast, and efficient."
   },
+  "details": {
+    "message": "Details"
+  },
+  "view": {
+    "message": "View"
+  },
   "downloading": {
     "message": "Downloading..."
   },

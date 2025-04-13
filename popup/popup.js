@@ -71,6 +71,8 @@ document.addEventListener("alpine:init", () => {
         apply: chrome.i18n.getMessage('apply'),
         downloading: chrome.i18n.getMessage('downloading'),
         downloadComplete: chrome.i18n.getMessage('downloadComplete'),
+        details: chrome.i18n.getMessage('details'),
+        view: chrome.i18n.getMessage('view'),
       };
     },
 
