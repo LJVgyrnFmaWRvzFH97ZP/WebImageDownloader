@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Web Image Downloader",
-  "version": "1.0",
-  "description": "Download the images on Websites",
+  "name": "__MSG_extName__",
+  "version": "1.0.1",
+  "description": "__MSG_extDescription__",
+  "minimum_chrome_version": "114",
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",
@@ -11,16 +12,23 @@
   },
   "permissions": [
     "webRequest",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
     "downloads",
-    "tabs"
+    "tabs",
+    "storage",
+    "system.display"
   ],
   "host_permissions": [
     "*://*/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "action": {
-    "default_popup": "popup/popup.html"
-  }
+    "default_title": "__MSG_extName__"
+  },
+  "options_page": "options/options.html",
+  "default_locale": "en"
 }

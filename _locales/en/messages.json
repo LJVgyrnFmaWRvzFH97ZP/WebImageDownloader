@@ -1,0 +1,89 @@
+{
+  "extName": {
+    "message": "Web Image Downloader"
+  },
+  "extDescription": {
+    "message": "Easily download multiple images from any webpage in one click. Simple, fast, and efficient."
+  },
+  "details": {
+    "message": "Details"
+  },
+  "view": {
+    "message": "View"
+  },
+  "downloading": {
+    "message": "Downloading..."
+  },
+  "downloadComplete": {
+    "message": "images have been saved!"
+  },
+  "filterByWidth": {
+    "message": "Filter by width"
+  },
+  "apply": {
+    "message": "Apply"
+  },
+  "previewLoading": {
+    "message": "Preview image loading..."
+  },
+  "noMediaDetected": {
+    "message": "No images detected ..."
+  },
+  "downloadTo": {
+    "message": "Download to"
+  },
+  "saveSelected": {
+    "message": "Save Selected"
+  },
+  "saveAll": {
+    "message": "Save All"
+  },
+  "clean": {
+    "message": "Clean"
+  },
+  "previous": {
+    "message": "Previous"
+  },
+  "next": {
+    "message": "Next"
+  },
+  "optionTitle": {
+    "message": "Web Image Downloader Settings"
+  },
+  "reset": {
+    "message": "RESET"
+  },
+  "save": {
+    "message": "SAVE"
+  },
+  "imageFormat": {
+    "message": "Image Format"
+  },
+  "imageFormatDescription": {
+    "message": "Target image format to detect."
+  },
+  "pageSize": {
+    "message": "Page Size"
+  },
+  "pageSizeDescription": {
+    "message": "Number of images to display each time."
+  },
+  "minimalWidth": {
+    "message": "Minimal Image Width"
+  },
+  "minimalWidthDescription": {
+    "message": "Minimal width of images to detect."
+  },
+  "filename": {
+    "message": "Filename"
+  },
+  "filenameDescription": {
+    "message": "Filename format of the downloaded image."
+  },
+  "customUrlPatterns": {
+    "message": "Custom URL Patterns"
+  },
+  "customUrlPatternsDescription": {
+    "message": "Define custom patterns (comma-separated) to intercept image URLs."
+  }
+}

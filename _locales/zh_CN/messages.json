@@ -1,0 +1,89 @@
+{
+  "extName": {
+    "message": "网页图片下载器"
+  },
+  "extDescription": {
+    "message": "轻松一键从任何网页下载多个图片。简单、快速且高效。"
+  },
+  "details": {
+    "message": "详情"
+  },
+  "view": {
+    "message": "查看"
+  },
+  "downloading": {
+    "message": "正在下载..."
+  },
+  "downloadComplete": {
+    "message": "张图片已保存！"
+  },
+  "filterByWidth": {
+    "message": "按宽度筛选"
+  },
+  "apply": {
+    "message": "应用"
+  },
+  "previewLoading": {
+    "message": "正在加载预览图像..."
+  },
+  "noMediaDetected": {
+    "message": "未检测到任何图像..."
+  },
+  "downloadTo": {
+    "message": "下载到"
+  },
+  "saveSelected": {
+    "message": "保存选中"
+  },
+  "saveAll": {
+    "message": "保存所有"
+  },
+  "clean": {
+    "message": "清理"
+  },
+  "previous": {
+    "message": "上一页"
+  },
+  "next": {
+    "message": "下一页"
+  },
+  "optionTitle": {
+    "message": "网页图片下载器设置"
+  },
+  "reset": {
+    "message": "重置"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "imageFormat": {
+    "message": "图片格式"
+  },
+  "imageFormatDescription": {
+    "message": "目标图片格式以进行检测。"
+  },
+  "pageSize": {
+    "message": "每页大小"
+  },
+  "pageSizeDescription": {
+    "message": "每次显示的图片数量。"
+  },
+  "minimalWidth": {
+    "message": "最小图片宽度"
+  },
+  "minimalWidthDescription": {
+    "message": "检测的最小图片宽度。"
+  },
+  "filename": {
+    "message": "文件名"
+  },
+  "filenameDescription": {
+    "message": "下载图片的文件名格式。"
+  },
+  "customUrlPatterns": {
+    "message": "自定义 URL 模式"
+  },
+  "customUrlPatternsDescription": {
+    "message": "定义自定义模式（以逗号分隔）来拦截图片 URL。"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "extName": {
+    "message": "Web 画像ダウンローダー"
+  },
+  "extDescription": {
+    "message": "ウェブページから複数の画像をワンクリックで簡単にダウンロードできます。シンプルで速く、効率的です。"
+  },
+  "details": {
+    "message": "詳細"
+  },
+  "view": {
+    "message": "表示"
+  },
+  "downloading": {
+    "message": "ダウンロード中..."
+  },
+  "downloadComplete": {
+    "message": "枚の画像が保存されました！"
+  },
+  "filterByWidth": {
+    "message": "幅でフィルター"
+  },
+  "apply": {
+    "message": "適用"
+  },
+  "previewLoading": {
+    "message": "プレビュー画像を読み込み中..."
+  },
+  "noMediaDetected": {
+    "message": "画像が検出されませんでした..."
+  },
+  "downloadTo": {
+    "message": "ダウンロード先"
+  },
+  "saveSelected": {
+    "message": "選択した保存"
+  },
+  "saveAll": {
+    "message": "すべて保存する"
+  },
+  "clean": {
+    "message": "クリーン"
+  },
+  "previous": {
+    "message": "前の"
+  },
+  "next": {
+    "message": "次の"
+  },
+  "optionTitle": {
+    "message": "Web 画像ダウンローダー 設定"
+  },
+  "reset": {
+    "message": "リセット"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "imageFormat": {
+    "message": "画像形式"
+  },
+  "imageFormatDescription": {
+    "message": "検出する対象画像形式。"
+  },
+  "pageSize": {
+    "message": "ページサイズ"
+  },
+  "pageSizeDescription": {
+    "message": "一度に表示する画像の数。"
+  },
+  "minimalWidth": {
+    "message": "最小画像幅"
+  },
+  "minimalWidthDescription": {
+    "message": "検出する画像の最小幅。"
+  },
+  "filename": {
+    "message": "ファイル名"
+  },
+  "filenameDescription": {
+    "message": "ダウンロードした画像のファイル名形式。"
+  },
+  "customUrlPatterns": {
+    "message": "カスタム URL パターン"
+  },
+  "customUrlPatternsDescription": {
+    "message": "画像URLをインターセプトするためのカスタムパターンを定義します（カンマ区切り）。"
+  }
+}

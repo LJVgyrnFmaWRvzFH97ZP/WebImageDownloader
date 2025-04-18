@@ -1,0 +1,89 @@
+{
+  "extName": {
+    "message": "網頁圖片下載器"
+  },
+  "extDescription": {
+    "message": "輕鬆一鍵從任何網頁下載多張圖片。簡單、快速且高效。"
+  },
+  "details": {
+    "message": "詳細"
+  },
+  "view": {
+    "message": "檢視"
+  },
+  "downloading": {
+    "message": "正在下載..."
+  },
+  "downloadComplete": {
+    "message": "張圖片已儲存！"
+  },
+  "filterByWidth": {
+    "message": "按寬度篩選"
+  },
+  "apply": {
+    "message": "套用"
+  },
+  "previewLoading": {
+    "message": "正在載入預覽圖片..."
+  },
+  "noMediaDetected": {
+    "message": "未偵測到任何圖片..."
+  },
+  "downloadTo": {
+    "message": "下載到"
+  },
+  "saveSelected": {
+    "message": "儲存選擇"
+  },
+  "saveAll": {
+    "message": "儲存所有"
+  },
+  "clean": {
+    "message": "清理"
+  },
+  "previous": {
+    "message": "上一頁"
+  },
+  "next": {
+    "message": "下一頁"
+  },
+  "optionTitle": {
+    "message": "網頁圖片下載器設定"
+  },
+  "reset": {
+    "message": "重置"
+  },
+  "save": {
+    "message": "儲存"
+  },
+  "imageFormat": {
+    "message": "圖片格式"
+  },
+  "imageFormatDescription": {
+    "message": "檢測目標圖片格式。"
+  },
+  "pageSize": {
+    "message": "頁面大小"
+  },
+  "pageSizeDescription": {
+    "message": "每次顯示的圖片數量。"
+  },
+  "minimalWidth": {
+    "message": "最小圖片寬度"
+  },
+  "minimalWidthDescription": {
+    "message": "檢測的最小圖片寬度。"
+  },
+  "filename": {
+    "message": "檔案名稱"
+  },
+  "filenameDescription": {
+    "message": "下載圖片的檔案名稱格式。"
+  },
+  "customUrlPatterns": {
+    "message": "自定義 URL 模式"
+  },
+  "customUrlPatternsDescription": {
+    "message": "定義自訂模式（以逗號分隔）來攔截圖片 URL。"
+  }
+}
